@@ -74,4 +74,12 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         }
         return EditorUI::ccTouchEnded(touch, event);
     }
+
+    void showUI(bool show) {
+        EditorUI::showUI(show);
+
+        auto alliumButton = static_cast<CCMenuItemSpriteExtra*>(this->getChildByIDRecursive("allium-button"_spr));
+        alliumButton->setEnabled(show);
+        alliumButton->setVisible(show);
+    }
 };
