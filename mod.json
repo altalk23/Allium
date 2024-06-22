@@ -14,5 +14,8 @@
 			"importance": "required",
 			"version": ">=1.11.0"
 		}
-	]
+	],
+	"links": {
+		"source": "https://github.com/altalk23/Allium"
+	}
 }
