@@ -1,5 +1,7 @@
 #include <Geode/Geode.hpp>
+#include <manager/BrushManager.hpp>
 #include <ui/AlliumPopup.hpp>
+#include <util/BrushDrawer.hpp>
 
 using namespace geode::prelude;
 using namespace allium;
@@ -35,5 +37,41 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         buttonMenu->updateLayout();
 
         return true;
+    }
+
+    CCPoint getLayerPosition(CCTouch* touch) {
+        auto objectLayer = LevelEditorLayer::get()->m_objectLayer;
+        auto glPoint = CCDirector::get()->convertToGL(touch->getLocationInView());
+		return objectLayer->convertToNodeSpace(this->convertToWorldSpace(glPoint));
+	}
+
+    bool ccTouchBegan(CCTouch* touch, CCEvent* event) {
+        if (BrushManager::get()->m_currentDrawer) {
+            auto layerPosition = this->getLayerPosition(touch);
+            BrushManager::get()->m_currentDrawer->handleTouchStart(layerPosition);
+
+            return true;
+        }
+        return EditorUI::ccTouchBegan(touch, event);
+    }
+
+    void ccTouchMoved(CCTouch* touch, CCEvent* event) {
+        if (BrushManager::get()->m_currentDrawer) {
+            auto layerPosition = this->getLayerPosition(touch);
+            BrushManager::get()->m_currentDrawer->handleTouchMove(layerPosition);
+
+            return;
+        }
+        return EditorUI::ccTouchMoved(touch, event);
+    }
+
+    void ccTouchEnded(CCTouch* touch, CCEvent* event) {
+        if (BrushManager::get()->m_currentDrawer) {
+            auto layerPosition = this->getLayerPosition(touch);
+            BrushManager::get()->m_currentDrawer->handleTouchEnd(layerPosition);
+
+            return;
+        }
+        return EditorUI::ccTouchEnded(touch, event);
     }
 };

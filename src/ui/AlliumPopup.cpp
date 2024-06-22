@@ -1,5 +1,8 @@
 #include <Geode/Geode.hpp>
+#include <manager/BrushManager.hpp>
 #include <ui/AlliumPopup.hpp>
+#include <util/BrushDrawer.hpp>
+#include <util/LineBrushDrawer.hpp>
 
 using namespace geode::prelude;
 using namespace allium;
@@ -19,6 +22,25 @@ void AlliumPopup::brushToggleCallback(CCMenuItemToggler* toggle) {
     if (toggle != m_lineBrushToggle) m_lineBrushToggle->toggle(false);
     if (toggle != m_curveBrushToggle) m_curveBrushToggle->toggle(false);
     if (toggle != m_freeBrushToggle) m_freeBrushToggle->toggle(false);
+
+    auto objectLayer = LevelEditorLayer::get()->m_objectLayer;
+    auto brushDrawer = static_cast<BrushDrawer*>(objectLayer->getChildByID("brush-drawer"_spr));
+    if (brushDrawer) {
+        brushDrawer->removeFromParent();
+    }
+    
+    if (toggle == m_lineBrushToggle) {
+        brushDrawer = LineBrushDrawer::create();
+        brushDrawer->setID("brush-drawer"_spr);
+        objectLayer->addChild(brushDrawer);
+
+        BrushManager::get()->m_currentDrawer = brushDrawer;
+        BrushManager::get()->m_currentBrush = BrushType::Line;
+    }
+    else {
+        BrushManager::get()->m_currentDrawer = nullptr;
+        BrushManager::get()->m_currentBrush = BrushType::None;
+    }
 }
 
 void AlliumPopup::createBrushToggle(std::string_view name, std::string const& id, CCMenuItemToggler*& toggle) {
@@ -74,7 +96,20 @@ bool AlliumPopup::setup() {
     createBrushToggle("Curve", "curve-brush", m_curveBrushToggle);
     createBrushToggle("Free", "free-brush", m_freeBrushToggle);
 
-    m_noneBrushToggle->toggle(true);
+    switch (BrushManager::get()->m_currentBrush) {
+        case BrushType::None:
+            m_noneBrushToggle->toggle(true);
+            break;
+        case BrushType::Line:
+            m_lineBrushToggle->toggle(true);
+            break;
+        case BrushType::Curve:
+            m_curveBrushToggle->toggle(true);
+            break;
+        case BrushType::Free:
+            m_freeBrushToggle->toggle(true);
+            break;
+    }
 
     m_brushMenu->updateLayout();
     m_mainColumn->updateLayout();

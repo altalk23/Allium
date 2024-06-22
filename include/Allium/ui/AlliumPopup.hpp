@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Geode/ui/Popup.hpp>
 
 namespace allium {

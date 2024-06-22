@@ -9,7 +9,10 @@ project(Allium VERSION 1.0.0)
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
     src/hooks/EditorUI.cpp
+    src/manager/BrushManager.cpp
     src/ui/AlliumPopup.cpp
+    src/util/BrushDrawer.cpp
+    src/util/LineBrushDrawer.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
