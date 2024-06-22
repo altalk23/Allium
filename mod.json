@@ -3,9 +3,9 @@
 	"gd": {
 		"win": "2.206"
 	},
-	"version": "v0.1.0",
+	"version": "v0.1.0-alpha",
 	"id": "alk.allium",
-	"name": "Allium",
+	"name": "Allium Drawing Tool",
 	"developer": "alk",
 	"description": "The drawing tool for Geometry Dash",
 	"dependencies": [
