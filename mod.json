@@ -4,7 +4,7 @@
 		"win": "2.206",
 		"android": "2.206"
 	},
-	"version": "v0.1.1-alpha",
+	"version": "v0.2.0-alpha",
 	"id": "alk.allium",
 	"name": "Allium Drawing Tool",
 	"developer": "alk",

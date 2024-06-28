@@ -2,6 +2,7 @@
 #include <manager/BrushManager.hpp>
 #include <ui/AlliumPopup.hpp>
 #include <util/BrushDrawer.hpp>
+#include <geode.custom-keybinds/include/Keybinds.hpp>
 
 using namespace geode::prelude;
 using namespace allium;
@@ -42,19 +43,6 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         buttonMenu->updateLayout();
 
         return true;
-    }
-
-    $override
-    void keyDown(enumKeyCodes key) {
-        if (key == KEY_Enter) {
-            if (BrushManager::get()->m_currentDrawer) {
-                BrushManager::get()->m_currentDrawer->clearOverlay();
-                BrushManager::get()->m_currentDrawer->updateLine();
-            }
-        }
-        else {
-            EditorUI::keyDown(key);
-        }
     }
 
     CCPoint getLayerPosition(CCTouch* touch) {
@@ -101,7 +89,27 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         EditorUI::showUI(show);
 
         auto alliumButton = static_cast<CCMenuItemSpriteExtra*>(this->getChildByIDRecursive("allium-button"_spr));
-        alliumButton->setEnabled(show);
-        alliumButton->setVisible(show);
+        if (alliumButton) {
+            alliumButton->setEnabled(show);
+            alliumButton->setVisible(show);
+        }
+
+        auto finalizeButton = static_cast<CCMenuItem*>(this->getChildByIDRecursive("allium-finalize-button"_spr));
+        if (finalizeButton) {
+            finalizeButton->setEnabled(show);
+            finalizeButton->setVisible(show);
+        }
     }
 };
+
+$execute {
+    using namespace keybinds;
+
+    BindManager::get()->registerBindable({
+        "finalize-brush"_spr,
+        "Finalize brush",
+        "Finalizes the brush created by the drawer.",
+        { Keybind::create(KEY_Enter, Modifier::None) },
+        "Allium/Brushes"
+    });
+}

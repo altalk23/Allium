@@ -30,6 +30,11 @@ void AlliumPopup::brushToggleCallback(CCMenuItemToggler* toggle) {
         brushDrawer->removeFromParent();
         brushDrawer = nullptr;
     }
+    auto buttonMenu = EditorUI::get()->getChildByID("editor-buttons-menu");
+    auto finalizeButton = static_cast<CCMenuItem*>(buttonMenu->getChildByID("allium-finalize-button"_spr));
+    if (finalizeButton) {
+        finalizeButton->removeFromParent();
+    }
     
     if (toggle == m_lineBrushToggle) {
         brushDrawer = LineBrushDrawer::create();
@@ -38,6 +43,29 @@ void AlliumPopup::brushToggleCallback(CCMenuItemToggler* toggle) {
     }
     else if (toggle == m_curveBrushToggle) {
         brushDrawer = CurveBrushDrawer::create();
+
+        auto topSprite = CCLabelBMFont::create("Finalize", "bigFont.fnt");
+
+        auto mySprite = BasedButtonSprite::create(
+            topSprite, BaseType::Editor, 
+            static_cast<int>(EditorBaseSize::Normal), static_cast<int>(EditorBaseColor::Orange)
+        );
+        mySprite->setTopRelativeScale(1.6f);
+
+        auto myButton = CCMenuItemExt::createSpriteExtra(
+            mySprite, [this](CCObject* sender) {
+                if (BrushManager::get()->m_currentDrawer) {
+                    BrushManager::get()->m_currentDrawer->clearOverlay();
+                    BrushManager::get()->m_currentDrawer->updateLine();
+                }
+            }
+        );
+        myButton->setID("allium-finalize-button"_spr);
+        // size set in Node IDs itself
+        myButton->setContentSize({ 40.f, 40.f });
+
+        buttonMenu->addChild(myButton);
+        buttonMenu->updateLayout();
 
         BrushManager::get()->m_currentBrush = BrushType::Curve;
     }
