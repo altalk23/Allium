@@ -100,15 +100,3 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         }
     }
 };
-
-$execute {
-    using namespace keybinds;
-
-    BindManager::get()->registerBindable({
-        "finalize-brush"_spr,
-        "Finalize brush",
-        "Finalizes the brush created by the drawer.",
-        { Keybind::create(KEY_Enter, Modifier::None) },
-        "Allium/Brushes"
-    });
-}
