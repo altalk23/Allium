@@ -60,10 +60,9 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
             }
             return ListenerResult::Propagate;
         }, "pan-editor-in-brush"_spr);
+    #endif
 
         return true;
-
-    #endif
     }
 
     CCPoint getLayerPosition(CCTouch* touch) {
