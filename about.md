@@ -7,3 +7,4 @@ If you like my work you can support me from my [Ko-Fi](https://ko-fi.com/alk1m12
 ## Licenses
 
  * [Geode: BSL 1.0](https://github.com/geode-sdk/geode/blob/main/LICENSE.txt)
+ * [Anti-Grain Geometry: 3-Clause BSD](https://github.com/ghaerr/agg-2.6/blob/master/README.md)

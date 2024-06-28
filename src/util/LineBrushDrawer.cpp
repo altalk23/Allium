@@ -20,6 +20,7 @@ bool LineBrushDrawer::init() {
 }
 
 bool LineBrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
+    m_canUpdateLine = true;
     m_firstPoint = point;
     m_lastPoint = point;
     this->updateOverlay();
@@ -41,6 +42,8 @@ void LineBrushDrawer::updateOverlay() {
 }
 
 void LineBrushDrawer::updateLine() {
+    if (!m_canUpdateLine) return;
+    m_canUpdateLine = false;
     static constexpr int SQUARE_OBJECT_ID = 211;
     static constexpr int WHITE_COLOR_ID = 1011;
 

@@ -11,7 +11,8 @@ bool BrushDrawer::init() {
 }
 
 bool BrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
-    return true;
+    m_canUpdateLine = true;
+    return false;
 }
 void BrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {}
 void BrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {}
@@ -21,4 +22,6 @@ void BrushDrawer::clearOverlay() {
     m_overlay->clear();
 }
 
-void BrushDrawer::updateLine() {}
+void BrushDrawer::updateLine() {
+    m_canUpdateLine = false;
+}

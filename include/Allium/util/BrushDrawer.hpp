@@ -6,6 +6,7 @@ namespace allium {
     class BrushDrawer : public cocos2d::CCNode {
     protected:
         cocos2d::CCDrawNode* m_overlay = nullptr;
+        bool m_canUpdateLine = false;
     public:
         bool init() override;
 

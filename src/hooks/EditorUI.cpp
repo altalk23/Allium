@@ -9,6 +9,7 @@ using namespace allium;
 #include <Geode/modify/EditorUI.hpp>
 
 struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
+    $override
     bool init(LevelEditorLayer* editorLayer) {
         if (!EditorUI::init(editorLayer)) return false;
 
@@ -26,6 +27,10 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
         auto myButton = CCMenuItemExt::createSpriteExtra(
             mySprite, [this](CCObject* sender) {
+                if (BrushManager::get()->m_currentDrawer) {
+                    BrushManager::get()->m_currentDrawer->clearOverlay();
+                    BrushManager::get()->m_currentDrawer->updateLine();
+                }
                 AlliumPopup::create()->show();
             }
         );
@@ -39,12 +44,26 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         return true;
     }
 
+    $override
+    void keyDown(enumKeyCodes key) {
+        if (key == KEY_Enter) {
+            if (BrushManager::get()->m_currentDrawer) {
+                BrushManager::get()->m_currentDrawer->clearOverlay();
+                BrushManager::get()->m_currentDrawer->updateLine();
+            }
+        }
+        else {
+            EditorUI::keyDown(key);
+        }
+    }
+
     CCPoint getLayerPosition(CCTouch* touch) {
         auto objectLayer = LevelEditorLayer::get()->m_objectLayer;
         auto glPoint = CCDirector::get()->convertToGL(touch->getLocationInView());
 		return objectLayer->convertToNodeSpace(this->convertToWorldSpace(glPoint));
 	}
 
+    $override
     bool ccTouchBegan(CCTouch* touch, CCEvent* event) {
         if (BrushManager::get()->m_currentDrawer) {
             auto layerPosition = this->getLayerPosition(touch);
@@ -55,6 +74,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         return EditorUI::ccTouchBegan(touch, event);
     }
 
+    $override
     void ccTouchMoved(CCTouch* touch, CCEvent* event) {
         if (BrushManager::get()->m_currentDrawer) {
             auto layerPosition = this->getLayerPosition(touch);
@@ -65,6 +85,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         return EditorUI::ccTouchMoved(touch, event);
     }
 
+    $override
     void ccTouchEnded(CCTouch* touch, CCEvent* event) {
         if (BrushManager::get()->m_currentDrawer) {
             auto layerPosition = this->getLayerPosition(touch);
@@ -75,6 +96,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         return EditorUI::ccTouchEnded(touch, event);
     }
 
+    $override
     void showUI(bool show) {
         EditorUI::showUI(show);
 

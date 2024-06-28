@@ -12,6 +12,7 @@ add_library(${PROJECT_NAME} SHARED
     src/manager/BrushManager.cpp
     src/ui/AlliumPopup.cpp
     src/util/BrushDrawer.cpp
+    src/util/CurveBrushDrawer.cpp
     src/util/LineBrushDrawer.cpp
 )
 
@@ -23,6 +24,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     include/Allium
 )
 
+if (WIN32)
+	# This allows you to compile in debug mode
+	add_compile_definitions(_HAS_ITERATOR_DEBUGGING=0)
+	add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
+endif()
+
 if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")
 else()
@@ -33,3 +40,6 @@ add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
 # Set up dependencies, resources, and link Geode.
 setup_geode_mod(${PROJECT_NAME})
+
+add_subdirectory(third_party/agg-2.6)
+target_link_libraries(${PROJECT_NAME} Agg-2.6)

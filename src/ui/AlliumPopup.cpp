@@ -2,6 +2,7 @@
 #include <manager/BrushManager.hpp>
 #include <ui/AlliumPopup.hpp>
 #include <util/BrushDrawer.hpp>
+#include <util/CurveBrushDrawer.hpp>
 #include <util/LineBrushDrawer.hpp>
 
 using namespace geode::prelude;
@@ -27,20 +28,28 @@ void AlliumPopup::brushToggleCallback(CCMenuItemToggler* toggle) {
     auto brushDrawer = static_cast<BrushDrawer*>(objectLayer->getChildByID("brush-drawer"_spr));
     if (brushDrawer) {
         brushDrawer->removeFromParent();
+        brushDrawer = nullptr;
     }
     
     if (toggle == m_lineBrushToggle) {
         brushDrawer = LineBrushDrawer::create();
-        brushDrawer->setID("brush-drawer"_spr);
-        objectLayer->addChild(brushDrawer);
 
-        BrushManager::get()->m_currentDrawer = brushDrawer;
         BrushManager::get()->m_currentBrush = BrushType::Line;
     }
+    else if (toggle == m_curveBrushToggle) {
+        brushDrawer = CurveBrushDrawer::create();
+
+        BrushManager::get()->m_currentBrush = BrushType::Curve;
+    }
     else {
-        BrushManager::get()->m_currentDrawer = nullptr;
         BrushManager::get()->m_currentBrush = BrushType::None;
     }
+    if (brushDrawer) {
+        brushDrawer->setID("brush-drawer"_spr);
+        objectLayer->addChild(brushDrawer);
+    }
+    BrushManager::get()->m_currentDrawer = brushDrawer;
+
 }
 
 void AlliumPopup::createBrushToggle(std::string_view name, std::string const& id, CCMenuItemToggler*& toggle) {
