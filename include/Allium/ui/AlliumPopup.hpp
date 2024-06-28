@@ -16,6 +16,12 @@ namespace allium {
     public:
         static AlliumPopup* create();
 
+        cocos2d::CCNode* getEnablePanningSprite();
+        cocos2d::CCNode* getDisablePanningSprite();
+
+        void createPanButton();
+        void createFinalizeButton();
+
         void brushToggleCallback(CCMenuItemToggler* toggle);
 
         void createBrushToggle(

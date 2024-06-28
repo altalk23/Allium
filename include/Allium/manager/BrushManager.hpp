@@ -18,5 +18,7 @@ namespace allium {
 
         BrushType m_currentBrush = BrushType::None;
         BrushDrawer* m_currentDrawer = nullptr;
+
+        bool m_panEditorInBrush = false;
     };
 }

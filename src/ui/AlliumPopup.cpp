@@ -18,6 +18,74 @@ AlliumPopup* AlliumPopup::create() {
     return nullptr;
 }
 
+CCNode* AlliumPopup::getEnablePanningSprite() {
+    auto enableSprite = BasedButtonSprite::create(
+        CCLabelBMFont::create("Enable\nPanning", "bigFont.fnt"), BaseType::Editor, 
+        static_cast<int>(EditorBaseSize::Normal), static_cast<int>(EditorBaseColor::Gray)
+    );
+    enableSprite->setTopRelativeScale(1.6f);
+    return enableSprite;
+}
+CCNode* AlliumPopup::getDisablePanningSprite() {
+    auto disableSprite = BasedButtonSprite::create(
+        CCLabelBMFont::create("Disable\nPanning", "bigFont.fnt"), BaseType::Editor, 
+        static_cast<int>(EditorBaseSize::Normal), static_cast<int>(EditorBaseColor::Green)
+    );
+    disableSprite->setTopRelativeScale(1.6f);
+    return disableSprite;
+}
+
+void AlliumPopup::createPanButton() {
+    auto buttonMenu = EditorUI::get()->getChildByID("editor-buttons-menu");
+    auto myButton = CCMenuItemExt::createSpriteExtra(
+        BrushManager::get()->m_panEditorInBrush ? this->getDisablePanningSprite() : this->getEnablePanningSprite(), 
+        [this](CCObject* sender) {
+            auto myButton = static_cast<CCMenuItemSprite*>(sender);
+            if (BrushManager::get()->m_panEditorInBrush) {
+                BrushManager::get()->m_panEditorInBrush = false;
+                myButton->setNormalImage(this->getEnablePanningSprite());
+            }
+            else {
+                BrushManager::get()->m_panEditorInBrush = true;
+                myButton->setNormalImage(this->getDisablePanningSprite());
+            }
+            myButton->setContentSize({ 40.f, 40.f });
+        }
+    );
+    myButton->setID("allium-panning-button"_spr);
+    // size set in Node IDs itself
+    myButton->setContentSize({ 40.f, 40.f });
+
+    buttonMenu->addChild(myButton);
+    buttonMenu->updateLayout();
+}
+void AlliumPopup::createFinalizeButton() {
+    auto buttonMenu = EditorUI::get()->getChildByID("editor-buttons-menu");
+
+    auto topSprite = CCLabelBMFont::create("Finalize", "bigFont.fnt");
+
+    auto mySprite = BasedButtonSprite::create(
+        topSprite, BaseType::Editor, 
+        static_cast<int>(EditorBaseSize::Normal), static_cast<int>(EditorBaseColor::Orange)
+    );
+    mySprite->setTopRelativeScale(1.6f);
+
+    auto myButton = CCMenuItemExt::createSpriteExtra(
+        mySprite, [this](CCObject* sender) {
+            if (BrushManager::get()->m_currentDrawer) {
+                BrushManager::get()->m_currentDrawer->clearOverlay();
+                BrushManager::get()->m_currentDrawer->updateLine();
+            }
+        }
+    );
+    myButton->setID("allium-finalize-button"_spr);
+    // size set in Node IDs itself
+    myButton->setContentSize({ 40.f, 40.f });
+
+    buttonMenu->addChild(myButton);
+    buttonMenu->updateLayout();
+}
+
 void AlliumPopup::brushToggleCallback(CCMenuItemToggler* toggle) {
     if (toggle != m_noneBrushToggle) m_noneBrushToggle->toggle(false);
     if (toggle != m_lineBrushToggle) m_lineBrushToggle->toggle(false);
@@ -35,42 +103,28 @@ void AlliumPopup::brushToggleCallback(CCMenuItemToggler* toggle) {
     if (finalizeButton) {
         finalizeButton->removeFromParent();
     }
+    auto panningButton = static_cast<CCMenuItem*>(buttonMenu->getChildByID("allium-panning-button"_spr));
+    if (panningButton) {
+        panningButton->removeFromParent();
+    }
     
     if (toggle == m_lineBrushToggle) {
         brushDrawer = LineBrushDrawer::create();
 
         BrushManager::get()->m_currentBrush = BrushType::Line;
+        this->createPanButton();
     }
     else if (toggle == m_curveBrushToggle) {
         brushDrawer = CurveBrushDrawer::create();
 
-        auto topSprite = CCLabelBMFont::create("Finalize", "bigFont.fnt");
-
-        auto mySprite = BasedButtonSprite::create(
-            topSprite, BaseType::Editor, 
-            static_cast<int>(EditorBaseSize::Normal), static_cast<int>(EditorBaseColor::Orange)
-        );
-        mySprite->setTopRelativeScale(1.6f);
-
-        auto myButton = CCMenuItemExt::createSpriteExtra(
-            mySprite, [this](CCObject* sender) {
-                if (BrushManager::get()->m_currentDrawer) {
-                    BrushManager::get()->m_currentDrawer->clearOverlay();
-                    BrushManager::get()->m_currentDrawer->updateLine();
-                }
-            }
-        );
-        myButton->setID("allium-finalize-button"_spr);
-        // size set in Node IDs itself
-        myButton->setContentSize({ 40.f, 40.f });
-
-        buttonMenu->addChild(myButton);
-        buttonMenu->updateLayout();
-
         BrushManager::get()->m_currentBrush = BrushType::Curve;
+        this->createPanButton();
+        this->createFinalizeButton();
     }
     else {
         BrushManager::get()->m_currentBrush = BrushType::None;
+
+        BrushManager::get()->m_panEditorInBrush = false;
     }
     if (brushDrawer) {
         brushDrawer->setID("brush-drawer"_spr);

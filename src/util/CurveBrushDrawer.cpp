@@ -135,6 +135,8 @@ void CurveBrushDrawer::updateLine() {
     std::vector<CurveOptimizer::Circle> circles;
     optimizer.handleExtension(rects, circles);
 
+    auto objects = CCArray::create();
+
     for (auto const& rect : rects) {
         static constexpr int SQUARE_OBJECT_ID = 211;
         static constexpr int WHITE_COLOR_ID = 1011;
@@ -160,6 +162,9 @@ void CurveBrushDrawer::updateLine() {
             object->m_detailColor->m_colorID = WHITE_COLOR_ID;
             object->m_shouldUpdateColorSprite = true;
         }
+
+        LevelEditorLayer::get()->m_undoObjects->removeLastObject();
+        objects->addObject(object);
     }
     for (auto const& circle : circles) {
         static constexpr int CIRCLE_OBJECT_ID = 725;
@@ -182,7 +187,14 @@ void CurveBrushDrawer::updateLine() {
             object->m_detailColor->m_colorID = WHITE_COLOR_ID;
             object->m_shouldUpdateColorSprite = true;
         }
+
+        LevelEditorLayer::get()->m_undoObjects->removeLastObject();
+        objects->addObject(object);
     }
+
+    LevelEditorLayer::get()->m_undoObjects->addObject(
+        UndoObject::createWithArray(objects, UndoCommand::Paste)
+    );
 
     m_previousPoints.clear();
     m_currentPoints.clear();
