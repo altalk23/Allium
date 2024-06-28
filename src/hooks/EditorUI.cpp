@@ -52,11 +52,13 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         using namespace keybinds;
 
         this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-            if (event->isDown()) {
-                BrushManager::get()->m_panEditorInBrush = true;
-            }
-            else {
-                BrushManager::get()->m_panEditorInBrush = false;
+            if (!BrushManager::get()->m_panEditorInBrush) {
+                if (event->isDown()) {
+                    BrushManager::get()->m_panEditorInBrush = true;
+                }
+                else {
+                    BrushManager::get()->m_panEditorInBrush = false;
+                }
             }
             return ListenerResult::Propagate;
         }, "pan-editor-in-brush"_spr);
