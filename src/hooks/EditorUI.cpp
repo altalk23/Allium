@@ -2,7 +2,6 @@
 #include <manager/BrushManager.hpp>
 #include <ui/AlliumPopup.hpp>
 #include <util/BrushDrawer.hpp>
-#include <geode.custom-keybinds/include/Keybinds.hpp>
 
 using namespace geode::prelude;
 using namespace allium;
