@@ -14,7 +14,13 @@
 			"id": "geode.node-ids",
 			"importance": "required",
 			"version": ">=1.11.0"
-		}
+		},
+		{
+            "id": "geode.custom-keybinds",
+            "version": ">=1.6.2",
+            "importance": "required",
+			"platforms": ["win"]
+        }
 	],
 	"links": {
 		"source": "https://github.com/altalk23/Allium"
