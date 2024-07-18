@@ -91,19 +91,19 @@ bool AlliumButtonBar::init(EditorUI* editorUI) {
         }
     );
 
-    auto thicknessButton = this->addDefaultButton(
-        "ThicknessIcon.png"_spr, "thickness-button"_spr,
-        [](auto sender) {
-            geode::openSettingsPopup(Mod::get());
-        }
-    );
+    // auto thicknessButton = this->addDefaultButton(
+    //     "ThicknessIcon.png"_spr, "thickness-button"_spr,
+    //     [](auto sender) {
+    //         geode::openSettingsPopup(Mod::get());
+    //     }
+    // );
 
-    auto colorButton = this->addDefaultButton(
-        "PaletteIcon.png"_spr, "color-button"_spr,
-        [](auto sender) {
-            geode::openSettingsPopup(Mod::get());
-        }
-    );
+    // auto colorButton = this->addDefaultButton(
+    //     "PaletteIcon.png"_spr, "color-button"_spr,
+    //     [](auto sender) {
+    //         geode::openSettingsPopup(Mod::get());
+    //     }
+    // );
 
     auto settingButton = this->addDefaultButton(
         "SettingIcon.png"_spr, "setting-button"_spr,
