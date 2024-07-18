@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.3.1-alpha
+ * Fixed the touch prio in support popup
+
 ## v0.3.0-alpha
  * Implemented freeform brush drawing using the [Ramer–Douglas–Peucker algorithm] (https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm)
  * New UI! Moved everything into a build tab, with new buttons and design

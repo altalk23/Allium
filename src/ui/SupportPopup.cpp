@@ -13,6 +13,14 @@ SupportPopup* SupportPopup::create() {
     return nullptr;
 }
 
+SupportPopup::~SupportPopup() {
+    cocos2d::CCTouchDispatcher::get()->unregisterForcePrio(this);
+}
+
+void SupportPopup::registerWithTouchDispatcher() {
+    cocos2d::CCTouchDispatcher::get()->addTargetedDelegate(this, -500, true);
+}
+
 bool SupportPopup::init() {
     if (!FLAlertLayer::initWithColor({0, 0, 0, 160})) return false;
 
@@ -20,6 +28,8 @@ bool SupportPopup::init() {
     this->setContentSize(CCDirector::sharedDirector()->getWinSize());
 
     this->setKeypadEnabled(true);
+
+    cocos2d::CCTouchDispatcher::get()->registerForcePrio(this, 2);
 
     m_mainLayer = CCLayer::create();
     this->addChildAtPosition(m_mainLayer, Anchor::Center, ccp(0, 0));

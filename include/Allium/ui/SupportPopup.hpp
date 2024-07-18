@@ -8,6 +8,9 @@ namespace allium {
         static SupportPopup* create();
         bool init() override;
 
+        ~SupportPopup() override;
+        void registerWithTouchDispatcher() override;
+
         void keyBackClicked() override;
         void onClose(cocos2d::CCObject* sender);
     };
