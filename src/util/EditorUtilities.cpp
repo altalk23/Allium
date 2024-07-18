@@ -22,11 +22,13 @@ void EditorUtilities::addRectangle(cocos2d::CCPoint const& p1, cocos2d::CCPoint 
     auto const center = (p1 + p3) / 2.0f;
     auto const angle = std::atan2(p2.y - p1.y, p2.x - p1.x);
 
-    auto object = LevelEditorLayer::get()->createObject(SQUARE_OBJECT_ID, center, false);
-    object->setRotation(-angle * 180.0f / M_PI);
-
     auto scaleX = p1.getDistance(p2) / SQUARE_OBJECT_SCALE;
     auto scaleY = p1.getDistance(p4) / SQUARE_OBJECT_SCALE;
+
+    if (scaleX < 0.001f || scaleY < 0.001f) return; // Prevent scale reset
+
+    auto object = LevelEditorLayer::get()->createObject(SQUARE_OBJECT_ID, center, false);
+    object->setRotation(-angle * 180.0f / M_PI);
 
     object->updateCustomScaleX(scaleX);
     object->updateCustomScaleY(scaleY);

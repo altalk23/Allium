@@ -2,6 +2,7 @@
 
 ## v0.3.2-alpha
  * Added Custom Keybinds as a dependency for all platforms
+ * Prevent scale resetting by not generating tiny scaled objects (< 0.001)
 
 ## v0.3.1-alpha
  * Fixed the touch prio in support popup
