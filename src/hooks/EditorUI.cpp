@@ -52,13 +52,11 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         using namespace keybinds;
 
         this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-            if (!BrushManager::get()->m_panEditorInBrush) {
-                if (event->isDown()) {
-                    BrushManager::get()->m_panEditorInBrush = true;
-                }
-                else {
-                    BrushManager::get()->m_panEditorInBrush = false;
-                }
+            if (event->isDown()) {
+                BrushManager::get()->m_tempPanEditorInBrush = true;
+            }
+            else {
+                BrushManager::get()->m_tempPanEditorInBrush = false;
             }
             return ListenerResult::Propagate;
         }, "pan-editor-in-brush"_spr);
@@ -75,7 +73,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
     $override
     bool ccTouchBegan(CCTouch* touch, CCEvent* event) {
-        if (!BrushManager::get()->m_panEditorInBrush && BrushManager::get()->m_currentDrawer) {
+        if (!BrushManager::get()->panEditorInBrush() && BrushManager::get()->m_currentDrawer) {
             auto layerPosition = this->getLayerPosition(touch);
             BrushManager::get()->m_currentDrawer->handleTouchStart(layerPosition);
 
@@ -86,7 +84,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
     $override
     void ccTouchMoved(CCTouch* touch, CCEvent* event) {
-        if (!BrushManager::get()->m_panEditorInBrush && BrushManager::get()->m_currentDrawer) {
+        if (!BrushManager::get()->panEditorInBrush() && BrushManager::get()->m_currentDrawer) {
             auto layerPosition = this->getLayerPosition(touch);
             BrushManager::get()->m_currentDrawer->handleTouchMove(layerPosition);
 
@@ -97,7 +95,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
     $override
     void ccTouchEnded(CCTouch* touch, CCEvent* event) {
-        if (!BrushManager::get()->m_panEditorInBrush && BrushManager::get()->m_currentDrawer) {
+        if (!BrushManager::get()->panEditorInBrush() && BrushManager::get()->m_currentDrawer) {
             auto layerPosition = this->getLayerPosition(touch);
             BrushManager::get()->m_currentDrawer->handleTouchEnd(layerPosition);
 

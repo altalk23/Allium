@@ -1,14 +1,17 @@
 #pragma once
 
+#include <Geode/Geode.hpp>
 #include "BrushDrawer.hpp"
 
 namespace allium {
-    class LineBrushDrawer : public BrushDrawer {
+    class FreeBrushDrawer : public BrushDrawer {
     protected:
-        cocos2d::CCPoint m_firstPoint = ccp(0, 0);
-        cocos2d::CCPoint m_lastPoint = ccp(0, 0);
+        std::vector<cocos2d::CCPoint> m_points;
+    private:
+
+        std::vector<cocos2d::CCPoint> simplify(std::vector<cocos2d::CCPoint> const& points);
     public:
-        static LineBrushDrawer* create();
+        static FreeBrushDrawer* create();
         bool init() override;
 
         bool handleTouchStart(cocos2d::CCPoint const& point) override;

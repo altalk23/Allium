@@ -3,6 +3,7 @@
 #include <ui/AlliumPopup.hpp>
 #include <util/BrushDrawer.hpp>
 #include <util/CurveBrushDrawer.hpp>
+#include <util/FreeBrushDrawer.hpp>
 #include <util/LineBrushDrawer.hpp>
 
 using namespace geode::prelude;
@@ -120,6 +121,12 @@ void AlliumPopup::brushToggleCallback(CCMenuItemToggler* toggle) {
         BrushManager::get()->m_currentBrush = BrushType::Curve;
         this->createPanButton();
         this->createFinalizeButton();
+    }
+    else if (toggle == m_freeBrushToggle) {
+        brushDrawer = FreeBrushDrawer::create();
+
+        BrushManager::get()->m_currentBrush = BrushType::Free;
+        this->createPanButton();
     }
     else {
         BrushManager::get()->m_currentBrush = BrushType::None;

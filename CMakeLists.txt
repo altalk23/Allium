@@ -13,7 +13,10 @@ add_library(${PROJECT_NAME} SHARED
     src/ui/AlliumPopup.cpp
     src/util/BrushDrawer.cpp
     src/util/CurveBrushDrawer.cpp
+    src/util/EditorUtilities.cpp
+    src/util/FreeBrushDrawer.cpp
     src/util/LineBrushDrawer.cpp
+    src/util/PolylineConverter.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

@@ -1,12 +1,14 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
+#include "PolylineConverter.hpp"
 
 namespace allium {
     class BrushDrawer : public cocos2d::CCNode {
     protected:
         cocos2d::CCDrawNode* m_overlay = nullptr;
         bool m_canUpdateLine = false;
+
     public:
         bool init() override;
 
@@ -18,5 +20,7 @@ namespace allium {
         void clearOverlay();
 
         virtual void updateLine();
+
+        virtual PolylineConverter initializeConverter() = 0;
     };
 }

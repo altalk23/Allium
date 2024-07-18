@@ -1,6 +1,6 @@
 #include <util/CurveBrushDrawer.hpp>
+#include <manager/BrushManager.hpp>
 #include <agg-2.6/agg_curves.h>
-#include "CurveOptimizer.hpp"
 
 using namespace geode::prelude;
 using namespace allium;
@@ -33,10 +33,10 @@ bool CurveBrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
     return true;
 }
 void CurveBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {
-    m_canUpdateLine = true;
     if (m_points.size() == 2) {
         m_points[1] = point;
     } else {
+        m_canUpdateLine = true;
         auto const point2Mirror = m_points[3] + (m_points[3] - point);
         m_points[2] = point2Mirror;
         m_currentPoints = this->getGeneratedPoints();
@@ -53,7 +53,7 @@ void CurveBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
 std::vector<std::array<double, 2>> CurveBrushDrawer::getGeneratedPoints() {
     std::vector<std::array<double, 2>> points;
     auto generator = agg::curve4_div();
-    generator.approximation_scale(m_curveRoughness);
+    generator.approximation_scale(BrushManager::get()->getCurveRoughness());
     generator.init(
         m_points[0].x, m_points[0].y,
         m_points[1].x, m_points[1].y,
@@ -67,15 +67,15 @@ std::vector<std::array<double, 2>> CurveBrushDrawer::getGeneratedPoints() {
     return points;
 }
 
-CurveOptimizer CurveBrushDrawer::initalizeOptimizer() {
-    std::vector<CurveOptimizer::Point> points;
+PolylineConverter CurveBrushDrawer::initializeConverter() {
+    std::vector<PolylineConverter::Point> points;
     for (auto const& point : m_previousPoints) {
         points.push_back({point[0], point[1]});
     }
     for (auto const& point : m_currentPoints) {
         points.push_back({point[0], point[1]});
     }
-    return CurveOptimizer(m_lineWidth, std::move(points));
+    return PolylineConverter(BrushManager::get()->getLineWidth(), std::move(points));
 }
 
 void CurveBrushDrawer::updateOverlay() {
@@ -92,109 +92,18 @@ void CurveBrushDrawer::updateOverlay() {
         m_overlay->drawDot(point2Mirror, 3.f, ccc4FFromccc3B(ccc3(127, 255, 127)));
         m_overlay->drawDot(m_points[3], 3.f, ccc4FFromccc3B(ccc3(127, 127, 255)));
        
-        auto optimizer = this->initalizeOptimizer();
-        std::vector<CurveOptimizer::Rect> rects;
-        std::vector<CurveOptimizer::Circle> circles;
-        optimizer.handleExtension(rects, circles);
-
-        for (auto const& rect : rects) {
-            m_overlay->drawPolygon(
-                std::array<cocos2d::CCPoint, 4>{
-                    {ccp(rect.p1.x, rect.p1.y), ccp(rect.p2.x, rect.p2.y), 
-                    ccp(rect.p3.x, rect.p3.y), ccp(rect.p4.x, rect.p4.y)}
-                }.data(),
-                4,
-                ccc4FFromccc3B(m_lineColor),
-                0,
-                ccc4FFromccc3B(m_lineColor)
-            );
-        }
-        for (auto const& circle : circles) {
-            std::vector<cocos2d::CCPoint> points;
-            for (size_t i = 0; i < 64; ++i) {
-                auto const angle = i * 2 * M_PI / 64;
-                points.emplace_back(ccp(circle.center.x, circle.center.y) + CCPoint::forAngle(angle) * circle.radius);
-            }
-            m_overlay->drawPolygon(
-                points.data(),
-                points.size(),
-                ccc4FFromccc3B(m_lineColor),
-                0,
-                ccc4FFromccc3B(m_lineColor)
-            );
-        }
+        BrushDrawer::updateOverlay();
     }   
 }
 
 void CurveBrushDrawer::updateLine() {
-    if (!m_canUpdateLine) return;
+    if (!m_canUpdateLine) {
+        m_points.clear();
+        return;
+    }
     m_canUpdateLine = false;
 
-    auto optimizer = this->initalizeOptimizer();
-    std::vector<CurveOptimizer::Rect> rects;
-    std::vector<CurveOptimizer::Circle> circles;
-    optimizer.handleExtension(rects, circles);
-
-    auto objects = CCArray::create();
-
-    for (auto const& rect : rects) {
-        static constexpr int SQUARE_OBJECT_ID = 211;
-        static constexpr int WHITE_COLOR_ID = 1011;
-        static constexpr float SQUARE_OBJECT_SCALE = 30.f;
-
-        auto const center = (ccp(rect.p1.x, rect.p1.y) + ccp(rect.p3.x, rect.p3.y)) / 2.0f;
-        auto const angle = std::atan2(rect.p2.y - rect.p1.y, rect.p2.x - rect.p1.x);
-
-        auto object = LevelEditorLayer::get()->createObject(SQUARE_OBJECT_ID, center, false);
-        object->setRotation(-angle * 180.0f / M_PI);
-
-        auto scaleX = ccp(rect.p1.x, rect.p1.y).getDistance(ccp(rect.p2.x, rect.p2.y)) / SQUARE_OBJECT_SCALE;
-        auto scaleY = ccp(rect.p1.x, rect.p1.y).getDistance(ccp(rect.p4.x, rect.p4.y)) / SQUARE_OBJECT_SCALE;
-
-        object->updateCustomScaleX(scaleX);
-        object->updateCustomScaleY(scaleY);
-
-        if (object->m_baseColor) {
-            object->m_baseColor->m_colorID = WHITE_COLOR_ID;
-            object->m_shouldUpdateColorSprite = true;
-        }
-        if (object->m_detailColor) {
-            object->m_detailColor->m_colorID = WHITE_COLOR_ID;
-            object->m_shouldUpdateColorSprite = true;
-        }
-
-        LevelEditorLayer::get()->m_undoObjects->removeLastObject();
-        objects->addObject(object);
-    }
-    for (auto const& circle : circles) {
-        static constexpr int CIRCLE_OBJECT_ID = 725;
-        static constexpr int WHITE_COLOR_ID = 1011;
-        static constexpr float CIRCLE_OBJECT_SCALE = 9.f;
-
-        auto object = LevelEditorLayer::get()->createObject(CIRCLE_OBJECT_ID, ccp(circle.center.x, circle.center.y), false);
-        
-        auto scaleX = circle.radius * 2 / CIRCLE_OBJECT_SCALE;
-        auto scaleY = circle.radius * 2 / CIRCLE_OBJECT_SCALE;
-
-        object->updateCustomScaleX(scaleX);
-        object->updateCustomScaleY(scaleY);
-
-        if (object->m_baseColor) {
-            object->m_baseColor->m_colorID = WHITE_COLOR_ID;
-            object->m_shouldUpdateColorSprite = true;
-        }
-        if (object->m_detailColor) {
-            object->m_detailColor->m_colorID = WHITE_COLOR_ID;
-            object->m_shouldUpdateColorSprite = true;
-        }
-
-        LevelEditorLayer::get()->m_undoObjects->removeLastObject();
-        objects->addObject(object);
-    }
-
-    LevelEditorLayer::get()->m_undoObjects->addObject(
-        UndoObject::createWithArray(objects, UndoCommand::Paste)
-    );
+    BrushDrawer::updateLine();
 
     m_previousPoints.clear();
     m_currentPoints.clear();
