@@ -1,7 +1,15 @@
 # Changelog
 
+## v0.3.0-alpha
+ * Implemented freeform brush drawing using the [Ramer–Douglas–Peucker algorithm] (https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm)
+ * New UI! Moved everything into a build tab, with new buttons and design
+ * Added a support button, I appreciate any amount of support!
+ * Fixed crash related to finalizing curved drawing early
+ * Changed the behavior of line drawing endpoints for consistency
+ * Line thickness, line color, curve detail and freeform threshold are all adjustable now!
+
 ## v0.2.0-alpha
- * Implemented simple curve drawing support with the use of Anti-Grain Geometry library
+ * Implemented simple curve drawing support with the use of [Anti-Grain Geometry library] (https://github.com/ghaerr/agg-2.6)
  * Added a finalize button to finalize the curve easier
  * Added a panning button to enable pannign while doing drawing
  * Fixed a crash issue related to leaving the brush open and exiting the editor
