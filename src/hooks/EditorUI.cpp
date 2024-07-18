@@ -3,9 +3,7 @@
 #include <ui/AlliumButtonBar.hpp>
 #include <util/BrushDrawer.hpp>
 
-#ifdef GEODE_IS_WINDOWS
 #include <geode.custom-keybinds/include/Keybinds.hpp>
-#endif
 
 using namespace geode::prelude;
 using namespace allium;
@@ -86,8 +84,6 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
         this->addChild(m_fields->m_buttonBar->getButtonBar());
 
-    #ifdef GEODE_IS_WINDOWS
-
         // Adds the keybind listener for panning in brush mode
         using namespace keybinds;
 
@@ -100,7 +96,6 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
             }
             return ListenerResult::Propagate;
         }, "pan-editor-in-brush"_spr);
-    #endif
 
         return true;
     }
@@ -145,8 +140,6 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
     }
 };
 
-#ifdef GEODE_IS_WINDOWS
-
 $execute {
     using namespace keybinds;
 
@@ -158,5 +151,3 @@ $execute {
         "Allium/Brushes"
     });
 }
-
-#endif
