@@ -4,7 +4,7 @@
 		"win": "2.206",
 		"android": "2.206"
 	},
-	"version": "v0.2.0-alpha",
+	"version": "v0.3.0-alpha",
 	"id": "alk.allium",
 	"name": "Allium Drawing Tool",
 	"developer": "alk",
@@ -24,5 +24,50 @@
 	],
 	"links": {
 		"source": "https://github.com/altalk23/Allium"
+	},
+	"resources": {
+		"spritesheets": {
+			"AlliumSpritesheet": [
+				"resources/*.png",
+				"resources/icons/*.png"
+			]
+		},
+		"sprites": [
+			"resources/images/*.png"
+		]
+	},
+	"settings": {
+		"brush-line-width": {
+			"type": "float",
+			"default": 5,
+			"min": 0.5,
+			"name": "Brush Width",
+			"description": "(Temporary) The thickness of the brush",
+			"max": 30
+		},
+		"brush-color-id": {
+			"type": "int",
+			"default": 1011,
+			"name": "Brush Color ID",
+			"description": "(Temporary) The ID of the brush color",
+			"min": 1,
+			"max": 1020
+		},
+		"brush-curve-detail": {
+			"type": "float",
+			"default": 0.4,
+			"min": 0.05,
+			"name": "Curve detail",
+			"description": "(Temporary) The detail of the curve",
+			"max": 3
+		},
+		"brush-free-threshold": {
+			"type": "float",
+			"default": 0.4,
+			"min": 0.05,
+			"name": "Free Threshold",
+			"description": "(Temporary) The threshold of the free tool",
+			"max": 1.5
+		}
 	}
 }

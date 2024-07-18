@@ -1,6 +1,6 @@
 #include <Geode/Geode.hpp>
 #include <manager/BrushManager.hpp>
-#include <ui/AlliumPopup.hpp>
+#include <ui/AlliumButtonBar.hpp>
 #include <util/BrushDrawer.hpp>
 
 #ifdef GEODE_IS_WINDOWS
@@ -13,38 +13,78 @@ using namespace allium;
 #include <Geode/modify/EditorUI.hpp>
 
 struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
+    struct Fields {
+        geode::Ref<AlliumButtonBar> m_buttonBar;
+        int tabTag = 0;
+    };
+
+    $override
+    void toggleMode(CCObject* sender) {
+        auto tag = sender->getTag();
+
+        if (tag != 1 && m_fields->m_buttonBar) {
+            m_fields->m_buttonBar->resetToggles(sender);
+        }
+        EditorUI::toggleMode(sender);
+    }
+
+    $override
+    void onSelectBuildTab(CCObject* sender) {
+        auto tag = sender->getTag();
+
+        if (tag != m_fields->tabTag && m_fields->m_buttonBar) {
+            m_fields->m_buttonBar->resetToggles(sender);
+        }
+        EditorUI::onSelectBuildTab(sender);
+    }
+
     $override
     bool init(LevelEditorLayer* editorLayer) {
         if (!EditorUI::init(editorLayer)) return false;
+
+        if (!Mod::get()->getSavedValue<bool>("allium-build-tab-announcement-shown", false)) {
+            auto popup = createQuickPopup(
+                "Allium", "Allium is available in the build tab now! You can access it there.",
+                "OK", nullptr, nullptr, false
+            );
+            popup->m_scene = m_editorLayer;
+            popup->show();
+
+            Mod::get()->setSavedValue("allium-build-tab-announcement-shown", true);
+        }
+
+        m_fields->m_buttonBar = AlliumButtonBar::create(this);
+
+        m_fields->m_buttonBar->getButtonBar()->setZOrder(10);
+        m_fields->m_buttonBar->getButtonBar()->setVisible(false);
+        m_createButtonBars->addObject(m_fields->m_buttonBar->getButtonBar());
+
+        auto spriteOn = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
+        spriteOn->setScale(0.2f);
+        auto onBg = CCSprite::createWithSpriteFrameName("GJ_tabOn_001.png");
+        onBg->addChildAtPosition(spriteOn, Anchor::Center, ccp(0, 0));
         
-        BrushManager::get()->m_currentDrawer = nullptr;
-        BrushManager::get()->m_currentBrush = BrushType::None;
-        BrushManager::get()->m_panEditorInBrush = false;
+        auto spriteOff = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
+        spriteOff->setScale(0.2f);
+        auto offBg = CCSprite::createWithSpriteFrameName("GJ_tabOff_001.png");
+        offBg->addChildAtPosition(spriteOff, Anchor::Center, ccp(0, 0));
+        offBg->setOpacity(150);
 
-        auto buttonMenu = this->getChildByID("editor-buttons-menu");
+        m_fields->tabTag = m_tabsArray->count();
 
-        // temporary, will be changed with a custom sprite
-        auto mySprite = BasedButtonSprite::create(
-            CCLabelBMFont::create("Allium", "bigFont.fnt"), BaseType::Editor, 
-            static_cast<int>(EditorBaseSize::Normal), static_cast<int>(EditorBaseColor::LightBlue)
-        );
-        mySprite->setTopRelativeScale(1.6f);
-
-        auto myButton = CCMenuItemExt::createSpriteExtra(
-            mySprite, [this](CCObject* sender) {
-                if (BrushManager::get()->m_currentDrawer) {
-                    BrushManager::get()->m_currentDrawer->clearOverlay();
-                    BrushManager::get()->m_currentDrawer->updateLine();
-                }
-                AlliumPopup::create()->show();
+        auto tabToggle = CCMenuItemExt::createToggler(
+            offBg, onBg, [this](CCObject* sender) {
+                this->onSelectBuildTab(sender);
+                static_cast<CCMenuItemToggler*>(sender)->toggle(false);
             }
         );
-        myButton->setID("allium-button"_spr);
-        // size set in Node IDs itself
-        myButton->setContentSize({ 40.f, 40.f });
+        tabToggle->setID("allium-tab-toggle"_spr);
+        tabToggle->setTag(m_fields->tabTag);
+        m_tabsArray->addObject(tabToggle);
+        m_tabsMenu->addChild(tabToggle);
+        m_tabsMenu->updateLayout();
 
-        buttonMenu->addChild(myButton);
-        buttonMenu->updateLayout();
+        this->addChild(m_fields->m_buttonBar->getButtonBar());
 
     #ifdef GEODE_IS_WINDOWS
 
@@ -73,9 +113,9 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
     $override
     bool ccTouchBegan(CCTouch* touch, CCEvent* event) {
-        if (!BrushManager::get()->panEditorInBrush() && BrushManager::get()->m_currentDrawer) {
+        if (!BrushManager::get()->panEditorInBrush() && m_fields->m_buttonBar->getBrushDrawer()) {
             auto layerPosition = this->getLayerPosition(touch);
-            BrushManager::get()->m_currentDrawer->handleTouchStart(layerPosition);
+            m_fields->m_buttonBar->getBrushDrawer()->handleTouchStart(layerPosition);
 
             return true;
         }
@@ -84,9 +124,9 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
     $override
     void ccTouchMoved(CCTouch* touch, CCEvent* event) {
-        if (!BrushManager::get()->panEditorInBrush() && BrushManager::get()->m_currentDrawer) {
+        if (!BrushManager::get()->panEditorInBrush() && m_fields->m_buttonBar->getBrushDrawer()) {
             auto layerPosition = this->getLayerPosition(touch);
-            BrushManager::get()->m_currentDrawer->handleTouchMove(layerPosition);
+            m_fields->m_buttonBar->getBrushDrawer()->handleTouchMove(layerPosition);
 
             return;
         }
@@ -95,36 +135,13 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
     $override
     void ccTouchEnded(CCTouch* touch, CCEvent* event) {
-        if (!BrushManager::get()->panEditorInBrush() && BrushManager::get()->m_currentDrawer) {
+        if (!BrushManager::get()->panEditorInBrush() && m_fields->m_buttonBar->getBrushDrawer()) {
             auto layerPosition = this->getLayerPosition(touch);
-            BrushManager::get()->m_currentDrawer->handleTouchEnd(layerPosition);
+            m_fields->m_buttonBar->getBrushDrawer()->handleTouchEnd(layerPosition);
 
             return;
         }
         return EditorUI::ccTouchEnded(touch, event);
-    }
-
-    $override
-    void showUI(bool show) {
-        EditorUI::showUI(show);
-
-        auto alliumButton = static_cast<CCMenuItemSpriteExtra*>(this->getChildByIDRecursive("allium-button"_spr));
-        if (alliumButton) {
-            alliumButton->setEnabled(show);
-            alliumButton->setVisible(show);
-        }
-
-        auto panButton = static_cast<CCMenuItem*>(this->getChildByIDRecursive("allium-panning-button"_spr));
-        if (panButton) {
-            panButton->setEnabled(show);
-            panButton->setVisible(show);
-        }
-
-        auto finalizeButton = static_cast<CCMenuItem*>(this->getChildByIDRecursive("allium-finalize-button"_spr));
-        if (finalizeButton) {
-            finalizeButton->setEnabled(show);
-            finalizeButton->setVisible(show);
-        }
     }
 };
 

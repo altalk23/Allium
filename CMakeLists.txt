@@ -10,7 +10,8 @@ add_library(${PROJECT_NAME} SHARED
     src/main.cpp
     src/hooks/EditorUI.cpp
     src/manager/BrushManager.cpp
-    src/ui/AlliumPopup.cpp
+    src/ui/AlliumButtonBar.cpp
+    src/ui/SupportPopup.cpp
     src/util/BrushDrawer.cpp
     src/util/CurveBrushDrawer.cpp
     src/util/EditorUtilities.cpp
