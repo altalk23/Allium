@@ -29,9 +29,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 if (WIN32)
-	# This allows you to compile in debug mode
-	add_compile_definitions(_HAS_ITERATOR_DEBUGGING=0)
-	add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
+    # This allows you to compile in debug mode
+    add_compile_definitions(_HAS_ITERATOR_DEBUGGING=0)
+    add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
 endif()
 
 if (NOT DEFINED ENV{GEODE_SDK})

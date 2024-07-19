@@ -13,6 +13,11 @@ namespace allium {
             double x;
             double y;
 
+            Point() = default;
+            Point(double x, double y)
+                : x(x), y(y)
+            {};
+
             Point operator+(Point const& other) const {
                 return Point{x + other.x, y + other.y};
             }
