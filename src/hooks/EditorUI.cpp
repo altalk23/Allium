@@ -66,6 +66,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         
         auto spriteOff = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
         spriteOff->setScale(0.2f);
+        spriteOff->setOpacity(150);
         auto offBg = CCSprite::createWithSpriteFrameName("GJ_tabOff_001.png");
         offBg->addChildAtPosition(spriteOff, Anchor::Center, ccp(0, 0));
         offBg->setOpacity(150);

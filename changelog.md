@@ -2,6 +2,7 @@
 
 ## v0.3.4-alpha
  * MacOS support! (thank SpaghettDev on Github)
+ * Fix tab opacity on the icon when not selected
 
 ## v0.3.3-alpha
  * Properly fix lines to origin in curve drawing for Android
