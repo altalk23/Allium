@@ -6,19 +6,13 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 project(Allium VERSION 1.0.0)
 
-add_library(${PROJECT_NAME} SHARED
-    src/main.cpp
-    src/hooks/EditorUI.cpp
-    src/manager/BrushManager.cpp
-    src/ui/AlliumButtonBar.cpp
-    src/ui/SupportPopup.cpp
-    src/util/BrushDrawer.cpp
-    src/util/CurveBrushDrawer.cpp
-    src/util/EditorUtilities.cpp
-    src/util/FreeBrushDrawer.cpp
-    src/util/LineBrushDrawer.cpp
-    src/util/PolylineConverter.cpp
+set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
+
+file(GLOB_RECURSE SRC_MAIN
+    "${SRC_DIR}/**.cpp"
 )
+add_library(${PROJECT_NAME} MODULE "${SRC_MAIN}")
+
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     include
