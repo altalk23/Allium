@@ -80,7 +80,7 @@ std::vector<cocos2d::CCPoint> FreeBrushDrawer::simplify(std::vector<cocos2d::CCP
 PolylineConverter FreeBrushDrawer::initializeConverter() {
     std::vector<PolylineConverter::Point> points;
     for (auto const& point : m_points) {
-        points.emplace_back(point.x, point.y);
+        points.emplace_back(static_cast<double>(point.x), static_cast<double>(point.y));
     }
     return PolylineConverter(BrushManager::get()->getLineWidth(), std::move(points));
 }
