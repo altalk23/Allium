@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.3.4-alpha
+ * MacOS support! (thank SpaghettDev on Github)
+
 ## v0.3.3-alpha
  * Properly fix lines to origin in curve drawing for Android
 
