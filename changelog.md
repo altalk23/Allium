@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.3.3-alpha
+ * Properly fix lines to origin in curve drawing for Android
+
 ## v0.3.2-alpha
  * Added Custom Keybinds as a dependency for all platforms
  * Prevent scale resetting by not generating tiny scaled objects (< 0.001)

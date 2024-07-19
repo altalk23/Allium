@@ -46,7 +46,9 @@ void CurveBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {
 void CurveBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
     CurveBrushDrawer::handleTouchMove(point);
     this->updateOverlay();
-    m_previousPoints.insert(m_previousPoints.end(), m_currentPoints.begin(), m_currentPoints.end());
+    if (m_currentPoints.size() > 1) {
+        m_previousPoints.insert(m_previousPoints.end(), m_currentPoints.begin(), m_currentPoints.end() - 1);
+    }
     m_currentPoints.clear();
 }
 
@@ -73,7 +75,6 @@ PolylineConverter CurveBrushDrawer::initializeConverter() {
         points.push_back({point[0], point[1]});
     }
     for (auto const& point : m_currentPoints) {
-        if (m_previousPoints.size() > 0 && m_previousPoints.back() == point) continue;
         points.push_back({point[0], point[1]});
     }
     return PolylineConverter(BrushManager::get()->getLineWidth(), std::move(points));
