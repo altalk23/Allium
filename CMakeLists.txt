@@ -6,13 +6,19 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 project(Allium VERSION 1.0.0)
 
-set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
-
-file(GLOB_RECURSE SRC_MAIN
-    "${SRC_DIR}/**.cpp"
+add_library(${PROJECT_NAME} SHARED
+    src/main.cpp
+    src/hooks/EditorUI.cpp
+    src/manager/BrushManager.cpp
+    src/ui/AlliumButtonBar.cpp
+    src/ui/SupportPopup.cpp
+    src/util/BrushDrawer.cpp
+    src/util/CurveBrushDrawer.cpp
+    src/util/EditorUtilities.cpp
+    src/util/FreeBrushDrawer.cpp
+    src/util/LineBrushDrawer.cpp
+    src/util/PolylineConverter.cpp
 )
-add_library(${PROJECT_NAME} MODULE "${SRC_MAIN}")
-
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     include
@@ -23,9 +29,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 if (WIN32)
-	# This allows you to compile in debug mode
-	add_compile_definitions(_HAS_ITERATOR_DEBUGGING=0)
-	add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
+    # This allows you to compile in debug mode
+    add_compile_definitions(_HAS_ITERATOR_DEBUGGING=0)
+    add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
 endif()
 
 if (NOT DEFINED ENV{GEODE_SDK})
