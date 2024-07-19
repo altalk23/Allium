@@ -21,13 +21,11 @@ bool LineBrushDrawer::init() {
 }
 
 bool LineBrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
-    m_canUpdateLine = true;
     m_firstPoint = point;
-    m_lastPoint = point;
-    this->updateOverlay();
     return true;
 }
 void LineBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {
+    m_canUpdateLine = true;
     m_lastPoint = point;
     this->updateOverlay();
 }

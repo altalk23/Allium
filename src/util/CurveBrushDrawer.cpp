@@ -73,6 +73,7 @@ PolylineConverter CurveBrushDrawer::initializeConverter() {
         points.push_back({point[0], point[1]});
     }
     for (auto const& point : m_currentPoints) {
+        if (m_previousPoints.size() > 0 && m_previousPoints.back() == point) continue;
         points.push_back({point[0], point[1]});
     }
     return PolylineConverter(BrushManager::get()->getLineWidth(), std::move(points));
