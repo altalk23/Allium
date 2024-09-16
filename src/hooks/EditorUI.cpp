@@ -2,6 +2,7 @@
 #include <manager/BrushManager.hpp>
 #include <ui/AlliumButtonBar.hpp>
 #include <util/BrushDrawer.hpp>
+#include <alphalaneous.editortab_api/include/EditorTabs.hpp>
 
 #ifdef GEODE_IS_WINDOWS
 #include <geode.custom-keybinds/include/Keybinds.hpp>
@@ -15,28 +16,7 @@ using namespace allium;
 struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
     struct Fields {
         geode::Ref<AlliumButtonBar> m_buttonBar;
-        int tabTag = 0;
     };
-
-    $override
-    void toggleMode(CCObject* sender) {
-        auto tag = sender->getTag();
-
-        if (tag != 1 && m_fields->m_buttonBar) {
-            m_fields->m_buttonBar->resetToggles(sender);
-        }
-        EditorUI::toggleMode(sender);
-    }
-
-    $override
-    void onSelectBuildTab(CCObject* sender) {
-        auto tag = sender->getTag();
-
-        if (tag != m_fields->tabTag && m_fields->m_buttonBar) {
-            m_fields->m_buttonBar->resetToggles(sender);
-        }
-        EditorUI::onSelectBuildTab(sender);
-    }
 
     $override
     bool init(LevelEditorLayer* editorLayer) {
@@ -55,37 +35,23 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
         m_fields->m_buttonBar = AlliumButtonBar::create(this);
 
-        m_fields->m_buttonBar->getButtonBar()->setZOrder(10);
-        m_fields->m_buttonBar->getButtonBar()->setVisible(false);
-        m_createButtonBars->addObject(m_fields->m_buttonBar->getButtonBar());
+        EditorTabs::addTab(this, TabType::BUILD, "allium"_spr, [this](EditorUI* ui, CCMenuItemToggler* toggler) -> CCNode* { 
 
-        auto spriteOn = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
-        spriteOn->setScale(0.2f);
-        auto onBg = CCSprite::createWithSpriteFrameName("GJ_tabOn_001.png");
-        onBg->addChildAtPosition(spriteOn, Anchor::Center, ccp(0, 0));
-        
-        auto spriteOff = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
-        spriteOff->setScale(0.2f);
-        spriteOff->setOpacity(150);
-        auto offBg = CCSprite::createWithSpriteFrameName("GJ_tabOff_001.png");
-        offBg->addChildAtPosition(spriteOff, Anchor::Center, ccp(0, 0));
-        offBg->setOpacity(150);
+            auto spriteOn = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
+            spriteOn->setScale(0.2f);
+            
+            auto spriteOff = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
+            spriteOff->setScale(0.2f);
 
-        m_fields->tabTag = m_tabsArray->count();
+            EditorTabUtils::setTabIcons(toggler, spriteOn, spriteOff);
 
-        auto tabToggle = CCMenuItemExt::createToggler(
-            offBg, onBg, [this](CCObject* sender) {
-                this->onSelectBuildTab(sender);
-                static_cast<CCMenuItemToggler*>(sender)->toggle(false);
+            return m_fields->m_buttonBar->getButtonBar();
+        }, [this](EditorUI*, bool state, CCNode*) {
+            if (!state) {
+                static_cast<AlliumButtonBar*>(m_fields->m_buttonBar)->resetToggles(nullptr);
             }
-        );
-        tabToggle->setID("allium-tab-toggle"_spr);
-        tabToggle->setTag(m_fields->tabTag);
-        m_tabsArray->addObject(tabToggle);
-        m_tabsMenu->addChild(tabToggle);
-        m_tabsMenu->updateLayout();
+        });
 
-        this->addChild(m_fields->m_buttonBar->getButtonBar());
 
     #ifdef GEODE_IS_WINDOWS
         // Adds the keybind listener for panning in brush mode
