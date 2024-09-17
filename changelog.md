@@ -1,8 +1,9 @@
 # Changelog
 
 ## v0.3.4-alpha
- * MacOS support! (thank SpaghettDev on Github)
+ * MacOS support (excluding the fact Custom Keybinds still isn't on MacOS) (thank SpaghettDev on Github)
  * Fix tab opacity on the icon when not selected
+ * Uses Alpha's Editor Tab API for the mod tab
 
 ## v0.3.3-alpha
  * Properly fix lines to origin in curve drawing for Android
