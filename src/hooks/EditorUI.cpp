@@ -36,14 +36,9 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         m_fields->m_buttonBar = AlliumButtonBar::create(this);
 
         EditorTabs::addTab(this, TabType::BUILD, "allium"_spr, [this](EditorUI* ui, CCMenuItemToggler* toggler) -> CCNode* { 
-
-            auto spriteOn = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
-            spriteOn->setScale(0.2f);
-            
-            auto spriteOff = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
-            spriteOff->setScale(0.2f);
-
-            EditorTabUtils::setTabIcons(toggler, spriteOn, spriteOff);
+            auto sprite = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
+            sprite->setScale(0.2f);
+            EditorTabUtils::setTabIcon(toggler, sprite);
 
             return m_fields->m_buttonBar->getButtonBar();
         }, [this](EditorUI*, bool state, CCNode*) {
