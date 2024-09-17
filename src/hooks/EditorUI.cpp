@@ -43,7 +43,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
             return m_fields->m_buttonBar->getButtonBar();
         }, [this](EditorUI*, bool state, CCNode*) {
             if (!state) {
-                static_cast<AlliumButtonBar*>(m_fields->m_buttonBar)->resetToggles(nullptr);
+                m_fields->m_buttonBar->resetToggles(nullptr);
             }
         });
 
