@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.5-alpha
+ * 2.2074 support
+ * what else alk adds idk
+
 ## v0.3.4-alpha
  * MacOS support (excluding the fact Custom Keybinds still isn't on MacOS) (thank SpaghettDev on Github)
  * Fix tab opacity on the icon when not selected

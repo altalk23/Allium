@@ -150,14 +150,14 @@ BrushDrawer* AlliumButtonBar::getBrushDrawer() const {
 
 CCMenuItemSpriteExtra* AlliumButtonBar::addDefaultButton(
     std::string_view spriteName, std::string_view id, 
-    utils::MiniFunction<void(CCMenuItemSpriteExtra*)> const& callback
+    std::function<void(CCMenuItemSpriteExtra*)> const& callback
 ) {
     return this->addButton(spriteName, "NeutralButton.png"_spr, id, callback);
 }
 
 CCMenuItemSpriteExtra* AlliumButtonBar::addButton(
     std::string_view spriteName, std::string_view bgName, std::string_view id, 
-    utils::MiniFunction<void(CCMenuItemSpriteExtra*)> const& callback
+    std::function<void(CCMenuItemSpriteExtra*)> const& callback
 ) {
     auto sprite = CCSprite::createWithSpriteFrameName(spriteName.data());
     auto bg = CCSprite::create(bgName.data());
@@ -176,14 +176,14 @@ CCMenuItemSpriteExtra* AlliumButtonBar::addButton(
 
 CCMenuItemToggler* AlliumButtonBar::addDefaultToggle(
     std::string_view spriteName, std::string_view id, 
-    utils::MiniFunction<void(CCMenuItemToggler*)> const& callback
+    std::function<void(CCMenuItemToggler*)> const& callback
 ) {
-    return this->addToggle(spriteName, "DeactiveButton.png"_spr, "ActiveButton.png"_spr, id, callback);
+    return addToggle(spriteName, "DeactiveButton.png"_spr, "ActiveButton.png"_spr, id, callback);
 }
 
 CCMenuItemToggler* AlliumButtonBar::addToggle(
     std::string_view spriteName, std::string_view bgOnName, std::string_view bgOffName, std::string_view id, 
-    utils::MiniFunction<void(CCMenuItemToggler*)> const& callback
+    std::function<void(CCMenuItemToggler*)> const& callback
 ) {
     auto sprite = CCSprite::createWithSpriteFrameName(spriteName.data());
     auto bgOff = CCSprite::create(bgOffName.data());
