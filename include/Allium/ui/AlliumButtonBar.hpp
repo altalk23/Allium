@@ -26,22 +26,22 @@ namespace allium {
 
         CCMenuItemSpriteExtra* addButton(
             std::string_view spriteName, std::string_view bgName, std::string_view id, 
-            geode::utils::MiniFunction<void(CCMenuItemSpriteExtra*)> const& callback
+            std::function<void(CCMenuItemSpriteExtra*)> const& callback
         );
 
         CCMenuItemSpriteExtra* addDefaultButton(
             std::string_view spriteName, std::string_view id, 
-            geode::utils::MiniFunction<void(CCMenuItemSpriteExtra*)> const& callback
+            std::function<void(CCMenuItemSpriteExtra*)> const& callback
         );
 
         CCMenuItemToggler* addToggle(
             std::string_view spriteName, std::string_view bgOnName, std::string_view bgOffName, std::string_view id, 
-            geode::utils::MiniFunction<void(CCMenuItemToggler*)> const& callback
+            std::function<void(CCMenuItemToggler*)> const& callback
         );
 
         CCMenuItemToggler* addDefaultToggle(
             std::string_view spriteName, std::string_view id, 
-            geode::utils::MiniFunction<void(CCMenuItemToggler*)> const& callback
+            std::function<void(CCMenuItemToggler*)> const& callback
         );
     };
 }
