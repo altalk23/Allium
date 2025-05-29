@@ -12,6 +12,7 @@ namespace allium {
         CCMenuItemToggler* m_lineToggle = nullptr;
         CCMenuItemToggler* m_curveToggle = nullptr;
         CCMenuItemToggler* m_freeToggle = nullptr;
+        CCMenuItemToggler* m_polygonToggle = nullptr;
         BrushDrawer* m_brushDrawer = nullptr;
 
     public:

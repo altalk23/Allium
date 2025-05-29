@@ -1,6 +1,6 @@
 #include <util/FreeBrushDrawer.hpp>
 #include <manager/BrushManager.hpp>
-#include <util/PolylineConverter.hpp>
+#include <util/converter/PolylineConverter.hpp>
 
 using namespace geode::prelude;
 using namespace allium;
@@ -28,19 +28,19 @@ bool FreeBrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
 }
 void FreeBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {
     m_points.emplace_back(point);
-    m_points = this->simplify(m_points);
+    m_points = BaseConverter::simplify(m_points);
     if (m_points.size() >= 2) m_canUpdateLine = true;
     this->updateOverlay();
 }
 void FreeBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
     m_points.emplace_back(point);
-    m_points = this->simplify(m_points);
+    m_points = BaseConverter::simplify(m_points);
     if (m_points.size() >= 2) m_canUpdateLine = true;
     this->clearOverlay();
     this->updateLine();
 }
 
-std::vector<cocos2d::CCPoint> FreeBrushDrawer::simplify(std::vector<cocos2d::CCPoint> const& points) {
+std::vector<Point> FreeBrushDrawer::simplify(std::vector<Point> const& points) {
     if (points.size() < 2) return points;
 
     float maxDistance = 0;
@@ -48,7 +48,7 @@ std::vector<cocos2d::CCPoint> FreeBrushDrawer::simplify(std::vector<cocos2d::CCP
     auto perpendicuarDistanceFunc = [](auto const p1, auto const p2, auto const pcheck) {
         auto const l2 = p1.getDistanceSq(p2);
         if (l2 == 0) return pcheck.getDistance(p1);
-        auto const t = std::max(0.f, std::min(1.f, (pcheck - p1).dot(p2 - p1) / l2));
+        auto const t = std::max(0.0, std::min(1.0, (pcheck - p1).dot(p2 - p1) / l2));
         auto const projection = p1 + (p2 - p1) * t;
         return pcheck.getDistance(projection);
     };
@@ -61,15 +61,15 @@ std::vector<cocos2d::CCPoint> FreeBrushDrawer::simplify(std::vector<cocos2d::CCP
         }
     }
 
-    std::vector<cocos2d::CCPoint> simplifiedPoints;
+    std::vector<Point> simplifiedPoints;
     if (maxDistance <= BrushManager::get()->getFreeThreshold()) {
         simplifiedPoints.emplace_back(points.front());
         simplifiedPoints.emplace_back(points.back());
         return simplifiedPoints;
     }
 
-    auto const left = this->simplify(std::vector<cocos2d::CCPoint>(points.begin(), points.begin() + maxIndex + 1));
-    auto const right = this->simplify(std::vector<cocos2d::CCPoint>(points.begin() + maxIndex, points.end()));
+    auto const left = BaseConverter::simplify(std::vector<Point>(points.begin(), points.begin() + maxIndex + 1));
+    auto const right = BaseConverter::simplify(std::vector<Point>(points.begin() + maxIndex, points.end()));
 
     simplifiedPoints.insert(simplifiedPoints.end(), left.begin(), left.end());
     simplifiedPoints.insert(simplifiedPoints.end(), right.begin() + 1, right.end());
@@ -77,12 +77,12 @@ std::vector<cocos2d::CCPoint> FreeBrushDrawer::simplify(std::vector<cocos2d::CCP
     return simplifiedPoints;
 }
 
-PolylineConverter FreeBrushDrawer::initializeConverter() {
-    std::vector<PolylineConverter::Point> points;
-    for (auto const& point : m_points) {
-        points.emplace_back(static_cast<double>(point.x), static_cast<double>(point.y));
-    }
-    return PolylineConverter(BrushManager::get()->getLineWidth(), std::move(points));
+std::unique_ptr<BaseConverter> FreeBrushDrawer::initializeConverter() {
+    std::vector<Point> points;
+    points.insert(points.end(), m_points.begin(), m_points.end());
+    return std::make_unique<PolylineConverter>(
+        BrushManager::get()->getLineWidth(), std::move(points)
+    );
 }
 
 void FreeBrushDrawer::updateOverlay() {

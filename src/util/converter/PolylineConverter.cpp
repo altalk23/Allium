@@ -1,4 +1,4 @@
-#include <util/PolylineConverter.hpp>
+#include <util/converter/PolylineConverter.hpp>
 
 using namespace allium;
 using namespace geode::prelude;
@@ -19,7 +19,7 @@ double PolylineConverter::c(Point p1, Point p2) {
 }
 
 // Returns the intersection point of the lines passing through p1 and p2 and r1 and r2
-PolylineConverter::Point PolylineConverter::intersect(Point p1, Point p2, Point r1, Point r2) {
+Point PolylineConverter::intersect(Point p1, Point p2, Point r1, Point r2) {
     auto const a1 = a(p1, p2);
     auto const b1 = b(p1, p2);
     auto const c1 = c(p1, p2);
@@ -53,7 +53,7 @@ bool PolylineConverter::hasAngle(Point p1, Point p2, Point p3) {
 
 // Returns the offset point of p2 based on the angle between the lines passing through p1, p2, and p2, p3
 // This is the corner of the rectangle that is wanted to be extended to intersection point
-PolylineConverter::Point PolylineConverter::offset(Point p1, Point p2, Point p3) {
+Point PolylineConverter::offset(Point p1, Point p2, Point p3) {
     auto const angle = this->angle(p1, p2, p3);
     auto const slope12 = (p2.y - p1.y) / (p2.x - p1.x);
     if (angle < 0) {
@@ -97,7 +97,8 @@ bool PolylineConverter::checkColinear(Point p1, Point p2, Point p3) {
 
 PolylineConverter::PolylineConverter(float lineWidth, std::vector<Point>&& points) : m_lineWidth(lineWidth), m_points(std::move(points)) {}
 
-void PolylineConverter::handleExtension(std::vector<PolylineConverter::Rect>& rects, std::vector<PolylineConverter::Circle>& circles) {
+std::vector<std::unique_ptr<Object>> PolylineConverter::handleExtension() {
+    std::vector<std::unique_ptr<Object>> objects;
     auto const size = m_points.size();
 
     for (size_t i = 0; i < size - 1; ++i) {
@@ -128,7 +129,7 @@ void PolylineConverter::handleExtension(std::vector<PolylineConverter::Rect>& re
                 // otherwise we need to be content with a circle
                 auto const center = end;
                 auto const radius = m_lineWidth / 2.0f;
-                circles.push_back(Circle{center, radius});
+                objects.push_back(std::make_unique<Circle>(center, radius));
             }
         }
 
@@ -151,6 +152,8 @@ void PolylineConverter::handleExtension(std::vector<PolylineConverter::Rect>& re
             std::sin(angle + M_PI / 2) * m_lineWidth / 2
         };
 
-        rects.push_back(Rect{corner1, corner2, corner3, corner4});
+        objects.push_back(std::make_unique<Rect>(corner1, corner2, corner3, corner4));
     }
+
+    return objects;
 }

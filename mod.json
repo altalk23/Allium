@@ -1,5 +1,5 @@
 {
-	"geode": "4.1.1",
+	"geode": "4.5.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -10,23 +10,20 @@
 	"name": "Allium Drawing Tool",
 	"developer": "alk",
 	"description": "The drawing tool for Geometry Dash",
-	"dependencies": [
-		{
-			"id": "geode.node-ids",
+	"dependencies": {
+		"geode.node-ids": {
 			"importance": "required",
 			"version": ">=1.11.0"
 		},
-		{
-			"id": "alphalaneous.editortab_api",
+		"alphalaneous.editortab_api": {
 			"importance": "required",
 			"version": ">=1.0.0"
 		},
-		{
-            "id": "geode.custom-keybinds",
+		"geode.custom-keybinds": {
             "version": ">=1.7.1",
             "importance": "required"
         }
-	],
+	},
 	"links": {
 		"source": "https://github.com/altalk23/Allium"
 	},
@@ -39,6 +36,11 @@
 		},
 		"sprites": [
 			"resources/images/*.png"
+		],
+		"files": [
+			"resources/Nunito-Regular.ttf",
+			"resources/Roboto-Regular.ttf",
+			"resources/NotoSansJP-Regular.ttf"
 		]
 	},
 	"settings": {

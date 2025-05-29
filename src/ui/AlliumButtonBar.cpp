@@ -4,11 +4,24 @@
 #include <util/CurveBrushDrawer.hpp>
 #include <util/FreeBrushDrawer.hpp>
 #include <util/LineBrushDrawer.hpp>
+#include <util/PolygonBrushDrawer.hpp>
+#include <util/TextBrushDrawer.hpp>
 #include <Geode/ui/GeodeUI.hpp>
 #include <ui/SupportPopup.hpp>
+#include <Geode/loader/Dispatch.hpp>
+#include <Geode/loader/Event.hpp>
 
 using namespace allium;
 using namespace geode::prelude;
+
+// static std::u32string lastImeInput = U"離れ離れの街を\n繋ぐ列車は行ってしまったね\n失くした言葉を知らないなら\nポケットで握りしめて";
+// static std::u32string lastImeInput = U"You were tough, unforgiving\nMade me cry, all the time\nYou were mean, such an asshole\nSo, I had to say goodbye";
+// static std::u32string lastImeInput = U"離れ離れの街を\n繋ぐ列車は行ってしまったね\n失くした言葉を知らないなら\nポケットで握りしめて\n\nあがいた息を捨てて\n延びる今日は眠って誤魔化せ\n失くした言葉を知らないなら\n各駅停車に乗り込んで\n\n夕方と退屈の\nお誘いを断って\n一人きり路地裏は\n決して急がないで\n\nほら横断歩道も\n待ってくれと言ってる\n見張る街角が\nあなたを引き留めてく";
+static std::u32string lastImeInput = U"It's\nalso\nblendable!\n\nTransparent\ntoo!\n\nOptimized\nfor\nobject\ncount!\n\nAllium\nupdate\nsoon!\n\nAlk1m123\nAlk1m123\nAlk1m123\nAlk1m123\n";
+auto listener = new EventListener(+[](std::wstring value) {
+    lastImeInput = string::utf8ToUtf32(string::wideToUtf8(value)).unwrapOrDefault();
+    return ListenerResult::Propagate;
+}, DispatchFilter<std::wstring>("alk.ime-input/win-result"));
 
 AlliumButtonBar* AlliumButtonBar::create(EditorUI* editorUI) {
     auto ret = new (std::nothrow) AlliumButtonBar();
@@ -91,12 +104,16 @@ bool AlliumButtonBar::init(EditorUI* editorUI) {
         }
     );
 
-    // auto thicknessButton = this->addDefaultButton(
-    //     "ThicknessIcon.png"_spr, "thickness-button"_spr,
-    //     [](auto sender) {
-    //         geode::openSettingsPopup(Mod::get());
-    //     }
-    // );
+    m_polygonToggle = this->addDefaultToggle(
+        "ThicknessIcon.png"_spr, "thickness-button"_spr,
+        [=, this](auto sender) {
+            this->resetToggles(sender);
+            if (sender->isToggled()) return;
+            m_brushDrawer = TextBrushDrawer::create(lastImeInput);
+            LevelEditorLayer::get()->m_objectLayer->addChild(m_brushDrawer);
+            m_brushDrawer->setID("brush-drawer"_spr);
+        }
+    );
 
     // auto colorButton = this->addDefaultButton(
     //     "PaletteIcon.png"_spr, "color-button"_spr,
@@ -132,6 +149,7 @@ void AlliumButtonBar::resetToggles(CCObject* sender) {
     if (sender != m_lineToggle) m_lineToggle->toggle(false);
     if (sender != m_curveToggle) m_curveToggle->toggle(false);
     if (sender != m_freeToggle) m_freeToggle->toggle(false);
+    if (sender != m_polygonToggle) m_polygonToggle->toggle(false);
     if (m_brushDrawer) {
         m_brushDrawer->clearOverlay();
         m_brushDrawer->updateLine();

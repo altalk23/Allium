@@ -1,52 +1,9 @@
 #pragma once
 
-#include <stdint.h>
-#include <vector>
-#include <cmath>
-#include <numbers>
-#include <Geode/Geode.hpp>
+#include "BaseConverter.hpp"
 
 namespace allium {
-    class PolylineConverter {
-    public:
-        struct Point {
-            double x;
-            double y;
-
-            Point() = default;
-            Point(double x, double y)
-                : x(x), y(y)
-            {};
-
-            Point operator+(Point const& other) const {
-                return Point{x + other.x, y + other.y};
-            }
-
-            Point operator-(Point const& other) const {
-                return Point{x - other.x, y - other.y};
-            }
-
-            Point operator*(double const& scalar) const {
-                return Point{x * scalar, y * scalar};
-            }
-
-            Point operator/(double const& scalar) const {
-                return Point{x / scalar, y / scalar};
-            }
-        };
-
-        struct Rect {
-            Point p1;
-            Point p2;
-            Point p3;
-            Point p4;
-        };
-
-        struct Circle {
-            Point center;
-            float radius;
-        };
-        
+    class PolylineConverter : public BaseConverter {
     private:
         float m_lineWidth;
         std::vector<Point> m_points;
@@ -81,11 +38,10 @@ namespace allium {
 
         // Checks if the points are colinear
         bool checkColinear(Point p1, Point p2, Point p3);
-
     public:
-
         PolylineConverter(float lineWidth, std::vector<Point>&& points);
+        ~PolylineConverter() override = default;
 
-        void handleExtension(std::vector<PolylineConverter::Rect>& rects, std::vector<PolylineConverter::Circle>& circles);
+        std::vector<std::unique_ptr<Object>> handleExtension() override;
     };
 }

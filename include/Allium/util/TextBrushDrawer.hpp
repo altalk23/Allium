@@ -3,13 +3,13 @@
 #include "BrushDrawer.hpp"
 
 namespace allium {
-    class LineBrushDrawer : public BrushDrawer {
+    class TextBrushDrawer : public BrushDrawer {
     protected:
-        Point m_firstPoint;
-        Point m_lastPoint;
+        std::vector<Point> m_points;
+        std::u32string m_text;
     public:
-        static LineBrushDrawer* create();
-        bool init() override;
+        static TextBrushDrawer* create(std::u32string const& text = U"");
+        bool init(std::u32string const& text = U"");
 
         bool handleTouchStart(cocos2d::CCPoint const& point) override;
         void handleTouchMove(cocos2d::CCPoint const& point) override;

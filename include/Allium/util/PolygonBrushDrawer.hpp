@@ -3,12 +3,11 @@
 #include "BrushDrawer.hpp"
 
 namespace allium {
-    class LineBrushDrawer : public BrushDrawer {
+    class PolygonBrushDrawer : public BrushDrawer {
     protected:
-        Point m_firstPoint;
-        Point m_lastPoint;
+        std::vector<Point> m_points;
     public:
-        static LineBrushDrawer* create();
+        static PolygonBrushDrawer* create();
         bool init() override;
 
         bool handleTouchStart(cocos2d::CCPoint const& point) override;

@@ -1,4 +1,5 @@
 #include <util/CurveBrushDrawer.hpp>
+#include <util/converter/PolylineConverter.hpp>
 #include <manager/BrushManager.hpp>
 #include <agg-2.6/agg_curves.h>
 
@@ -52,8 +53,8 @@ void CurveBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
     m_currentPoints.clear();
 }
 
-std::vector<std::array<double, 2>> CurveBrushDrawer::getGeneratedPoints() {
-    std::vector<std::array<double, 2>> points;
+std::vector<Point> CurveBrushDrawer::getGeneratedPoints() {
+    std::vector<Point> points;
     auto generator = agg::curve4_div();
     generator.approximation_scale(BrushManager::get()->getCurveRoughness());
     generator.init(
@@ -69,15 +70,13 @@ std::vector<std::array<double, 2>> CurveBrushDrawer::getGeneratedPoints() {
     return points;
 }
 
-PolylineConverter CurveBrushDrawer::initializeConverter() {
-    std::vector<PolylineConverter::Point> points;
-    for (auto const& point : m_previousPoints) {
-        points.push_back({point[0], point[1]});
-    }
-    for (auto const& point : m_currentPoints) {
-        points.push_back({point[0], point[1]});
-    }
-    return PolylineConverter(BrushManager::get()->getLineWidth(), std::move(points));
+std::unique_ptr<BaseConverter> CurveBrushDrawer::initializeConverter() {
+    std::vector<Point> points;
+    points.insert(points.end(), m_previousPoints.begin(), m_previousPoints.end());
+    points.insert(points.end(), m_currentPoints.begin(), m_currentPoints.end());
+    return std::make_unique<PolylineConverter>(
+        BrushManager::get()->getLineWidth(), std::move(points)
+    );
 }
 
 void CurveBrushDrawer::updateOverlay() {

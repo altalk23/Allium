@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
-#include "PolylineConverter.hpp"
+#include "converter/BaseConverter.hpp"
 
 namespace allium {
     class BrushDrawer : public cocos2d::CCNode {
@@ -21,6 +21,6 @@ namespace allium {
 
         virtual void updateLine();
 
-        virtual PolylineConverter initializeConverter() = 0;
+        virtual std::unique_ptr<BaseConverter> initializeConverter() = 0;
     };
 }

@@ -1,5 +1,6 @@
 #include <util/LineBrushDrawer.hpp>
 #include <manager/BrushManager.hpp>
+#include <util/converter/PolylineConverter.hpp>
 
 using namespace geode::prelude;
 using namespace allium;
@@ -35,11 +36,13 @@ void LineBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
     this->updateLine();
 }
 
-PolylineConverter LineBrushDrawer::initializeConverter() {
-    std::vector<PolylineConverter::Point> points;
-    points.push_back({m_firstPoint.x, m_firstPoint.y});
-    points.push_back({m_lastPoint.x, m_lastPoint.y});
-    return PolylineConverter(BrushManager::get()->getLineWidth(), std::move(points));
+std::unique_ptr<BaseConverter> LineBrushDrawer::initializeConverter() {
+    std::vector<Point> points;
+    points.push_back(m_firstPoint);
+    points.push_back(m_lastPoint);
+    return std::make_unique<PolylineConverter>(
+        BrushManager::get()->getLineWidth(), std::move(points)
+    );
 }
 
 void LineBrushDrawer::updateOverlay() {

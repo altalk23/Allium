@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BrushDrawer.hpp"
+#include "../data/Geometry.hpp"
 
 namespace allium {
 
@@ -8,14 +9,14 @@ namespace allium {
     class CurveBrushDrawer : public BrushDrawer {
     protected:
         // Maximum size of 4 points
-        std::vector<cocos2d::CCPoint> m_points;
+        std::vector<Point> m_points;
 
         // Generated points for all of the curves
-        std::vector<std::array<double, 2>> m_previousPoints;
-        std::vector<std::array<double, 2>> m_currentPoints;
+        std::vector<Point> m_previousPoints;
+        std::vector<Point> m_currentPoints;
 
     private:
-        std::vector<std::array<double, 2>> getGeneratedPoints();
+        std::vector<Point> getGeneratedPoints();
 
     public:
         static CurveBrushDrawer* create();
@@ -29,6 +30,6 @@ namespace allium {
 
         void updateLine() override;
 
-        PolylineConverter initializeConverter() override;
+        std::unique_ptr<BaseConverter> initializeConverter() override;
     };
 }

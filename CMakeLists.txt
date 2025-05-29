@@ -8,16 +8,20 @@ project(Allium VERSION 0.4.0)
 
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
+    src/data/Geometry.cpp
     src/hooks/EditorUI.cpp
     src/manager/BrushManager.cpp
     src/ui/AlliumButtonBar.cpp
     src/ui/SupportPopup.cpp
     src/util/BrushDrawer.cpp
     src/util/CurveBrushDrawer.cpp
-    src/util/EditorUtilities.cpp
     src/util/FreeBrushDrawer.cpp
     src/util/LineBrushDrawer.cpp
-    src/util/PolylineConverter.cpp
+    src/util/PolygonBrushDrawer.cpp
+    src/util/TextBrushDrawer.cpp
+    src/util/converter/BaseConverter.cpp
+    src/util/converter/PolylineConverter.cpp
+    src/util/converter/TriangulatorConverter.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -26,12 +30,18 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     include/Allium
+    third_party
 )
 
 if (WIN32)
     # This allows you to compile in debug mode
     add_compile_definitions(_HAS_ITERATOR_DEBUGGING=0)
     add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
+
+    target_link_libraries(${PROJECT_NAME}
+        glu32
+    )
+
 endif()
 
 if (NOT DEFINED ENV{GEODE_SDK})

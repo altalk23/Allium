@@ -6,10 +6,10 @@
 namespace allium {
     class FreeBrushDrawer : public BrushDrawer {
     protected:
-        std::vector<cocos2d::CCPoint> m_points;
+        std::vector<Point> m_points;
     private:
 
-        std::vector<cocos2d::CCPoint> simplify(std::vector<cocos2d::CCPoint> const& points);
+        std::vector<Point> simplify(std::vector<Point> const& points);
     public:
         static FreeBrushDrawer* create();
         bool init() override;
@@ -22,6 +22,6 @@ namespace allium {
 
         void updateLine() override;
 
-        PolylineConverter initializeConverter() override;
+        std::unique_ptr<BaseConverter> initializeConverter() override;
     };
 }
