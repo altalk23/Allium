@@ -104,13 +104,13 @@ void TextBrushDrawer::relocateCursor(cocos2d::CCPoint const& point, bool updateI
 }
 
 bool TextBrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
-    if (m_updatedOrigin) {
+    if (m_updatedOrigin && m_composition.empty()) {
         this->relocateCursor(point, false);
     }
     return true;
 }
 void TextBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {
-    if (m_updatedOrigin) {
+    if (m_updatedOrigin && m_composition.empty()) {
         this->relocateCursor(point, false);
     }
 }
@@ -123,10 +123,9 @@ void TextBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
         if (m_fontPath != Mod::get()->getSettingValue<std::filesystem::path>("font-path")) {
             this->initFontData();
         }
-
-        this->relocateCursor(point, true);
     }
-    else {
+    
+    if (m_composition.empty()) {
         this->relocateCursor(point, true);
     }
     m_canUpdateLine = true;
