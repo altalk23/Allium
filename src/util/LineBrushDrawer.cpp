@@ -23,15 +23,20 @@ bool LineBrushDrawer::init() {
 
 bool LineBrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
     m_firstPoint = point;
+    if (CCKeyboardDispatcher::get()->getAltKeyPressed()) m_firstPoint = BaseConverter::gridAlign(m_firstPoint, 30.f);
     return true;
 }
 void LineBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {
     m_canUpdateLine = true;
     m_lastPoint = point;
+    if (CCKeyboardDispatcher::get()->getShiftKeyPressed()) m_lastPoint = BaseConverter::align(m_firstPoint, m_lastPoint);
+    else if (CCKeyboardDispatcher::get()->getAltKeyPressed()) m_lastPoint = BaseConverter::gridAlign(m_lastPoint, 30.f);
     this->updateOverlay();
 }
 void LineBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
     m_lastPoint = point;
+    if (CCKeyboardDispatcher::get()->getShiftKeyPressed()) m_lastPoint = BaseConverter::align(m_firstPoint, m_lastPoint);
+    else if (CCKeyboardDispatcher::get()->getAltKeyPressed()) m_lastPoint = BaseConverter::gridAlign(m_lastPoint, 30.f);
     this->clearOverlay();
     this->updateLine();
 }

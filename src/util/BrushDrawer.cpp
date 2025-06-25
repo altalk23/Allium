@@ -5,7 +5,7 @@ using namespace geode::prelude;
 using namespace allium;
 
 bool BrushDrawer::init() {
-    m_overlay = cocos2d::CCDrawNode::create();
+    m_overlay = DrawNodeExtension::create();
     this->addChild(m_overlay);
 
     return true;
@@ -40,9 +40,27 @@ void BrushDrawer::updateLine() {
 
     auto objects = CCArray::create();
 
+    auto editorLayer = LevelEditorLayer::get();
+    auto lastId = -1;
+    auto lastEditorId = editorLayer->m_lastUsedLinkedID;
+
+    if (!editorLayer->m_linkedGroupDict) editorLayer->m_linkedGroupDict = CCDictionary::create();
+
     for (auto const& object : convertedObjects) {
         if (GEODE_UNWRAP_IF_OK(obj, object->addAsGameObject(LevelEditorLayer::get(), lineColorID))) {
             objects->addObject(obj);
+            if (lastId != object->idx) {
+                lastId = object->idx;
+                lastEditorId++;
+                editorLayer->m_lastUsedLinkedID++;
+            }
+            obj->m_linkedGroup = lastEditorId;
+            auto group = static_cast<CCArray*>(editorLayer->m_linkedGroupDict->objectForKey(lastEditorId));
+            if (!group) {
+                group = CCArray::create();
+                editorLayer->m_linkedGroupDict->setObject(group, lastEditorId);
+            }
+            group->addObject(obj);
         }
     }
 

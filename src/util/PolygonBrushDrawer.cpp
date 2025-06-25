@@ -22,17 +22,30 @@ bool PolygonBrushDrawer::init() {
 }
 
 bool PolygonBrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
-    m_points.emplace_back(point);
+    auto point2 = point;
+    if (CCKeyboardDispatcher::get()->getShiftKeyPressed() && m_points.size()) point2 = BaseConverter::align(m_points.back(), point2);
+    if (CCKeyboardDispatcher::get()->getAltKeyPressed()) point2 = BaseConverter::gridAlign(point2, 30.f);
+    m_points.emplace_back(point2);
     if (m_points.size() >= 3) m_canUpdateLine = true;
     return true;
 }
 void PolygonBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {
-    if (m_points.size() > 0) m_points.back() = point;
+    if (m_points.size() > 0) {
+        auto point2 = point;
+        if (CCKeyboardDispatcher::get()->getShiftKeyPressed() && m_points.size() > 1) point2 = BaseConverter::align(m_points[m_points.size() - 2], point2);
+        else if (CCKeyboardDispatcher::get()->getAltKeyPressed()) point2 = BaseConverter::gridAlign(point2, 30.f);
+        m_points.back() = point2;
+    }
     this->updateOverlay();
 }
 void PolygonBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
-    if (m_points.size() > 0) m_points.back() = point;
-    this->clearOverlay();
+    if (m_points.size() > 0) {
+        auto point2 = point;
+        if (CCKeyboardDispatcher::get()->getShiftKeyPressed() && m_points.size() > 1) point2 = BaseConverter::align(m_points[m_points.size() - 2], point2);
+        else if (CCKeyboardDispatcher::get()->getAltKeyPressed()) point2 = BaseConverter::gridAlign(point2, 30.f);
+        m_points.back() = point2;
+    }
+    this->updateOverlay();
 }
 
 std::unique_ptr<BaseConverter> PolygonBrushDrawer::initializeConverter() {

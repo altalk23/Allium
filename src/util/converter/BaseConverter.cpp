@@ -40,3 +40,19 @@ std::vector<Point> BaseConverter::simplify(std::vector<Point> const& points) {
 
     return simplifiedPoints;
 }
+
+cocos2d::CCPoint BaseConverter::align(cocos2d::CCPoint const& point, cocos2d::CCPoint const& toAlign) {
+    auto horizontalDiff = point.x - toAlign.x;
+    auto verticalDiff = point.y - toAlign.y;
+    if (std::abs(horizontalDiff) > std::abs(verticalDiff)) {
+        return cocos2d::CCPoint{toAlign.x, point.y};
+    } else {
+        return cocos2d::CCPoint{point.x, toAlign.y};
+    }
+}
+
+cocos2d::CCPoint BaseConverter::gridAlign(cocos2d::CCPoint const& point, float gridSize) {
+    auto const x = std::round((point.x + gridSize/2.f) / gridSize - 0.5f) * gridSize;
+    auto const y = std::round((point.y + gridSize/2.f) / gridSize - 0.5f) * gridSize;
+    return cocos2d::CCPoint{x, y};
+}

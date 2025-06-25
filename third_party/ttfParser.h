@@ -647,8 +647,8 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 	memset(glyph_loaded, 0, sizeof(bool) * max_profile.numGlyphs);
 
 	auto parse_glyph = [&](uint32_t glyph_character_index, uint16_t i, auto&& self) -> int8_t {
-		if (glyph_loaded[i] == true)
-			return 1;
+		// if (glyph_loaded[i] == true)
+		// 	return 1;
 
 		Glyph& current_glyph = font_data->glyphs[glyph_character_index];
 		current_glyph.glyph_index = i;
@@ -985,6 +985,9 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 	for (uint16_t i = 0; i < max_profile.numGlyphs; i++) {
 		for (auto[itr, rangeEnd] = glyph_reverse_map.equal_range(i); itr != rangeEnd; ++itr) {
 			uint32_t glyph_character_index = itr->second;
+			if (glyph_character_index == 0x8a00) {
+				geode::log::debug("found glyph with character index 0x8a00");
+			}
 			parse_glyph(glyph_character_index, i, parse_glyph);
 		}
 	}

@@ -1,5 +1,5 @@
 {
-	"geode": "4.5.0",
+	"geode": "4.6.1",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -22,7 +22,11 @@
 		"geode.custom-keybinds": {
             "version": ">=1.7.1",
             "importance": "required"
-        }
+        },
+		"alk.ime-input": {
+			"version": ">=1.0.0",
+			"importance": "required"
+		}
 	},
 	"links": {
 		"source": "https://github.com/altalk23/Allium"
@@ -38,9 +42,7 @@
 			"resources/images/*.png"
 		],
 		"files": [
-			"resources/Nunito-Regular.ttf",
-			"resources/Roboto-Regular.ttf",
-			"resources/NotoSansJP-Regular.ttf"
+			"resources/Nunito-Regular.ttf"
 		]
 	},
 	"settings": {
@@ -71,10 +73,36 @@
 		"brush-free-threshold": {
 			"type": "float",
 			"default": 0.4,
-			"min": 0.05,
+			"min": 0.01,
 			"name": "Free Threshold",
-			"description": "(Temporary) The threshold of the free tool",
+			"description": "(Temporary) The threshold of the free tool and text optimizaion",
 			"max": 1.5
+		},
+		"font-path": {
+			"type": "file",
+			"description": "(Temporary) The path to the font file",
+			"default": ""
+		},
+		"text-detail": {
+			"type": "float",
+			"control": {
+				"slider-step": 0.01,
+				"arrow-step": 0.01,
+				"big-arrow-step": 0.1
+			},
+			"default": 0,
+			"min": 0.0,
+			"name": "Text detail",
+			"description": "(Temporary) The detail of the text",
+			"max": 1.0
+		},
+		"text-size": {
+			"type": "float",
+			"default": 24,
+			"min": 1.0,
+			"name": "Text size",
+			"description": "(Temporary) The size of the text",
+			"max": 576.0
 		}
 	}
 }

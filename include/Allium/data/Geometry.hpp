@@ -6,6 +6,7 @@
 #include <Geode/Geode.hpp>
 
 namespace allium {
+    class DrawNodeExtension;
     struct Point {
         double x = 0.0;
         double y = 0.0;
@@ -122,9 +123,10 @@ namespace allium {
     };
 
     struct Object {
+        size_t idx = 0;
         virtual ~Object() = default;
         virtual geode::Result<GameObject*> addAsGameObject(LevelEditorLayer* editorLayer, int colorID) const = 0;
-        virtual geode::Result<> drawIntoDrawNode(cocos2d::CCDrawNode* node, cocos2d::ccColor3B color) const = 0;
+        virtual geode::Result<> drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const = 0;
     };
 
     struct Rect : Object {
@@ -140,7 +142,7 @@ namespace allium {
         virtual ~Rect() = default;
 
         geode::Result<GameObject*> addAsGameObject(LevelEditorLayer* editorLayer, int colorID) const override;
-        geode::Result<> drawIntoDrawNode(cocos2d::CCDrawNode* node, cocos2d::ccColor3B color) const override;
+        geode::Result<> drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const override;
     };
 
     struct Circle : Object {
@@ -154,7 +156,7 @@ namespace allium {
         virtual ~Circle() = default;
 
         geode::Result<GameObject*> addAsGameObject(LevelEditorLayer* editorLayer, int colorID) const override;
-        geode::Result<> drawIntoDrawNode(cocos2d::CCDrawNode* node, cocos2d::ccColor3B color) const override;
+        geode::Result<> drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const override;
     };
 
     struct Triangle : Object {
@@ -169,6 +171,6 @@ namespace allium {
         virtual ~Triangle() = default;
 
         geode::Result<GameObject*> addAsGameObject(LevelEditorLayer* editorLayer, int colorID) const override;
-        geode::Result<> drawIntoDrawNode(cocos2d::CCDrawNode* node, cocos2d::ccColor3B color) const override;
+        geode::Result<> drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const override;
     };
 }

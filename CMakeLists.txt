@@ -15,6 +15,7 @@ add_library(${PROJECT_NAME} SHARED
     src/ui/SupportPopup.cpp
     src/util/BrushDrawer.cpp
     src/util/CurveBrushDrawer.cpp
+    src/util/DrawNodeExtension.cpp
     src/util/FreeBrushDrawer.cpp
     src/util/LineBrushDrawer.cpp
     src/util/PolygonBrushDrawer.cpp

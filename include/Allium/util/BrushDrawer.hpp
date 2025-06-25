@@ -2,11 +2,12 @@
 
 #include <Geode/Geode.hpp>
 #include "converter/BaseConverter.hpp"
+#include "DrawNodeExtension.hpp"
 
 namespace allium {
     class BrushDrawer : public cocos2d::CCNode {
     protected:
-        cocos2d::CCDrawNode* m_overlay = nullptr;
+        DrawNodeExtension* m_overlay = nullptr;
         bool m_canUpdateLine = false;
 
     public:

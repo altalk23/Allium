@@ -24,6 +24,7 @@ void TriangulatorConverter::converterEnd() {
                 m_triangles.push_back(std::make_unique<Triangle>(
                     m_currentVertices[i], m_currentVertices[i + 1], m_currentVertices[i + 2]
                 ));
+                m_triangles.back()->idx = m_currentPolygonIndex;
             }
             break;
         }
@@ -34,6 +35,7 @@ void TriangulatorConverter::converterEnd() {
                 m_triangles.push_back(std::make_unique<Triangle>(
                     center, m_currentVertices[i], m_currentVertices[i + 1]
                 ));
+                m_triangles.back()->idx = m_currentPolygonIndex;
             }
             break;
         }
@@ -44,10 +46,12 @@ void TriangulatorConverter::converterEnd() {
                     m_triangles.push_back(std::make_unique<Triangle>(
                         m_currentVertices[i], m_currentVertices[i + 1], m_currentVertices[i + 2]
                     ));
+                    m_triangles.back()->idx = m_currentPolygonIndex;
                 } else {
                     m_triangles.push_back(std::make_unique<Triangle>(
                         m_currentVertices[i + 2], m_currentVertices[i + 1], m_currentVertices[i]
                     ));
+                    m_triangles.back()->idx = m_currentPolygonIndex;
                 }
             }
             break;
@@ -121,6 +125,8 @@ std::vector<std::unique_ptr<Object>> TriangulatorConverter::handleExtension() {
         }
 
         gluTessEndPolygon(tess);
+
+        m_currentPolygonIndex++;
     }
 
     gluDeleteTess(tess);

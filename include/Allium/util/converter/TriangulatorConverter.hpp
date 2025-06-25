@@ -14,6 +14,7 @@ namespace allium {
         std::vector<Point> m_currentVertices;
         std::vector<std::unique_ptr<Object>> m_triangles;
         std::vector<std::unique_ptr<double[]>> m_allocatedData;
+        size_t m_currentPolygonIndex = 0;
 
         void converterBegin(GLenum type);
         void converterVertex(void* vertexData);

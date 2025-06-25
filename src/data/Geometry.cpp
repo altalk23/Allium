@@ -1,4 +1,5 @@
 #include <data/Geometry.hpp>
+#include <util/DrawNodeExtension.hpp>
 
 using namespace geode::prelude;
 using namespace allium;
@@ -34,12 +35,12 @@ geode::Result<GameObject*> Rect::addAsGameObject(LevelEditorLayer* editorLayer, 
     return Ok(object);
 }
 
-geode::Result<> Rect::drawIntoDrawNode(cocos2d::CCDrawNode* node, cocos2d::ccColor3B color) const {
+geode::Result<> Rect::drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const {
     node->drawPolygon(
         std::array<cocos2d::CCPoint, 4>{
             {p1, p2, p3, p4}
         }.data(), 4,
-        ccc4FFromccc3B(color), 0, ccColor4F{0.f, 0.f, 0.f, 0.f}
+        ccc4FFromccc3B(color)
     );
 
     return Ok();
@@ -70,7 +71,7 @@ geode::Result<GameObject*> Circle::addAsGameObject(LevelEditorLayer* editorLayer
     return Ok(object);
 }
 
-geode::Result<> Circle::drawIntoDrawNode(cocos2d::CCDrawNode* node, cocos2d::ccColor3B color) const {
+geode::Result<> Circle::drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const {
     std::array<cocos2d::CCPoint, 32> points;
     for (size_t i = 0; i < 32; ++i) {
         auto const angle = i * 2 * M_PI / 32;
@@ -78,7 +79,7 @@ geode::Result<> Circle::drawIntoDrawNode(cocos2d::CCDrawNode* node, cocos2d::ccC
     }
     node->drawPolygon(
         points.data(), points.size(),
-        ccc4FFromccc3B(color), 0, ccColor4F{0.f, 0.f, 0.f, 0.f}
+        ccc4FFromccc3B(color)
     );
 
     return Ok();
@@ -123,12 +124,12 @@ geode::Result<GameObject*> Triangle::addAsGameObject(LevelEditorLayer* editorLay
     return Ok(object);
 }
 
-geode::Result<> Triangle::drawIntoDrawNode(cocos2d::CCDrawNode* node, cocos2d::ccColor3B color) const {
+geode::Result<> Triangle::drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const {
     node->drawPolygon(
         std::array<cocos2d::CCPoint, 3>{
             {p1, p2, p3}
         }.data(), 3,
-        ccc4FFromccc3B(color), 0, ccColor4F{0.f, 0.f, 0.f, 0.f}
+        ccc4FFromccc3B(color)
     );
 
     return Ok();
