@@ -31,6 +31,7 @@
 	"links": {
 		"source": "https://github.com/altalk23/Allium"
 	},
+	"tags": ["editor", "enhancement", "utility"],
 	"resources": {
 		"spritesheets": {
 			"AlliumSpritesheet": [

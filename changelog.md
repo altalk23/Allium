@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.0.0
+ * Added support for custom text with a ttf font file
+ * Added a text editor to edit the text
+ * Added a polygon drawing tool
+ * Holding shift while drawing aligns to the last point
+ * Holding alt while drawing aligns to the grid
+
 ## v0.3.4-alpha
  * MacOS support (excluding the fact Custom Keybinds still isn't on MacOS) (thank SpaghettDev on Github)
  * Fix tab opacity on the icon when not selected
