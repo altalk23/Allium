@@ -92,7 +92,7 @@
 				"arrow-step": 0.01,
 				"big-arrow-step": 0.1
 			},
-			"default": 0,
+			"default": 0.1,
 			"min": 0.0,
 			"name": "Text detail",
 			"description": "(Temporary) The detail of the text",

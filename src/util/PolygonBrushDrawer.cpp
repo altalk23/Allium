@@ -76,4 +76,6 @@ void PolygonBrushDrawer::updateLine() {
     m_canUpdateLine = false;
     
     BrushDrawer::updateLine();
+
+    m_points.clear();
 }
