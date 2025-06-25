@@ -34,6 +34,14 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     third_party
 )
 
+if (NOT DEFINED ENV{GEODE_SDK})
+    message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")
+else()
+    message(STATUS "Found Geode: $ENV{GEODE_SDK}")
+endif()
+
+add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
+
 if (WIN32)
     # This allows you to compile in debug mode
     add_compile_definitions(_HAS_ITERATOR_DEBUGGING=0)
@@ -42,16 +50,13 @@ if (WIN32)
     target_link_libraries(${PROJECT_NAME}
         glu32
     )
-
-endif()
-
-if (NOT DEFINED ENV{GEODE_SDK})
-    message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")
 else()
-    message(STATUS "Found Geode: $ENV{GEODE_SDK}")
-endif()
+    CPMAddPackage("gh:lunixbochs/glues#44cb7c6")
 
-add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
+    target_link_libraries(${PROJECT_NAME}
+        GLU
+    )
+endif()
 
 # Set up dependencies, resources, and link Geode.
 setup_geode_mod(${PROJECT_NAME})
