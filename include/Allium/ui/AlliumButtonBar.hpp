@@ -1,20 +1,21 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
+#include "../util/BrushDrawer.hpp"
 
 namespace allium {
     class BrushDrawer;
     class AlliumButtonBar : public cocos2d::CCNode {
     protected:
         geode::Ref<EditButtonBar> m_buttonBar;
-        cocos2d::CCArray* m_buttons = nullptr;
+        geode::Ref<cocos2d::CCArray> m_buttons = nullptr;
 
-        CCMenuItemToggler* m_lineToggle = nullptr;
-        CCMenuItemToggler* m_curveToggle = nullptr;
-        CCMenuItemToggler* m_freeToggle = nullptr;
-        CCMenuItemToggler* m_polygonToggle = nullptr;
-        CCMenuItemToggler* m_textToggle = nullptr;
-        BrushDrawer* m_brushDrawer = nullptr;
+        geode::Ref<CCMenuItemToggler> m_lineToggle = nullptr;
+        geode::Ref<CCMenuItemToggler> m_curveToggle = nullptr;
+        geode::Ref<CCMenuItemToggler> m_freeToggle = nullptr;
+        geode::Ref<CCMenuItemToggler> m_polygonToggle = nullptr;
+        geode::Ref<CCMenuItemToggler> m_textToggle = nullptr;
+        geode::Ref<BrushDrawer> m_brushDrawer = nullptr;
 
     public:
         static AlliumButtonBar* create(EditorUI* editorUI);
