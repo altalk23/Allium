@@ -98,7 +98,11 @@ void TextBrushDrawer::relocateCursor(cocos2d::CCPoint const& point, bool updateI
         m_isFocused = false;
         this->detachWithIME();
     }
+#if defined(GEODE_IS_ANDROID) || defined(GEODE_IS_IOS)
+    m_cursor = m_boxes.size();
+#else
     m_cursor = closestIndex;
+#endif
 
     this->updateOverlay();
 }
@@ -304,6 +308,7 @@ bool TextBrushDrawer::canDetachWithIME() {
     return true;
 }
 void TextBrushDrawer::insertText(char const* text, int len, cocos2d::enumKeyCodes code) {
+    // log::debug("Inserting text: '{}' with length: {} at cursor position: {}", std::string_view{text, (size_t)len}, len, m_cursor);
     switch (code) {
         case enumKeyCodes::KEY_Left: {
             if (m_cursor > 0) {
@@ -369,7 +374,10 @@ void TextBrushDrawer::insertText(char const* text, int len, cocos2d::enumKeyCode
         }
         default: {
             m_composition = U"";
-            auto const value = string::utf8ToUtf32(std::string_view{text, (size_t)len}).unwrapOrDefault();
+            auto  value = string::utf8ToUtf32(std::string_view{text, (size_t)len}).unwrapOrDefault();
+        #if defined(GEODE_IS_ANDROID) || defined(GEODE_IS_IOS)
+            value.erase(std::remove(value.begin(), value.end(), U'\n'), value.end());
+        #endif
             m_text.insert(m_cursor, value);
             m_cursor += value.size();
             this->updateOverlay();
@@ -379,9 +387,11 @@ void TextBrushDrawer::insertText(char const* text, int len, cocos2d::enumKeyCode
 }
 char const* TextBrushDrawer::getContentText() {
     m_u8text = string::utf32ToUtf8(m_text).unwrapOrDefault();
+    // log::debug("Content text updated: {}", m_u8text);
     return m_u8text.c_str();
 }
 void TextBrushDrawer::deleteBackward() {
+    // log::debug("Deleting backward at cursor position: {}", m_cursor);
     if (!m_text.empty() && m_cursor > 0) {
         m_text.erase(m_cursor - 1, 1);
 
@@ -390,6 +400,7 @@ void TextBrushDrawer::deleteBackward() {
     }
 }
 void TextBrushDrawer::deleteForward() {
+    // log::debug("Deleting forward at cursor position: {}", m_cursor);
     if (!m_text.empty() && m_cursor < m_text.size()) {
         m_text.erase(m_cursor, 1);
 

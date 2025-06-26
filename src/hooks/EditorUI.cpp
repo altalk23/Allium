@@ -35,17 +35,17 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
         m_fields->m_buttonBar = AlliumButtonBar::create(this);
 
-        EditorTabs::addTab(this, TabType::BUILD, "allium"_spr, [this](EditorUI* ui, CCMenuItemToggler* toggler) -> CCNode* { 
-            auto sprite = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
-            sprite->setScale(0.2f);
-            EditorTabUtils::setTabIcon(toggler, sprite);
+        // EditorTabs::addTab(this, TabType::BUILD, "allium"_spr, [this](EditorUI* ui, CCMenuItemToggler* toggler) -> CCNode* { 
+        //     auto sprite = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
+        //     sprite->setScale(0.2f);
+        //     EditorTabUtils::setTabIcon(toggler, sprite);
 
-            return m_fields->m_buttonBar->getButtonBar();
-        }, [this](EditorUI*, bool state, CCNode*) {
-            if (!state) {
-                m_fields->m_buttonBar->resetToggles(nullptr);
-            }
-        });
+        //     return m_fields->m_buttonBar->getButtonBar();
+        // }, [this](EditorUI*, bool state, CCNode*) {
+        //     if (!state) {
+        //         m_fields->m_buttonBar->resetToggles(nullptr);
+        //     }
+        // });
 
 
     #ifdef GEODE_IS_WINDOWS
