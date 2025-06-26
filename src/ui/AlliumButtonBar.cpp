@@ -224,13 +224,14 @@ CCMenuItemToggler* AlliumButtonBar::addToggle(
     auto bgOn = CCSprite::create(bgOnName.data());
     bgOn->addChildAtPosition(sprite, Anchor::Center, ccp(0, 0));
 
-    auto button = CCMenuItemExt::createToggler(
-        bgOn,
-        bgOff,
-        [=](CCObject* sender) {
-            callback(static_cast<CCMenuItemToggler*>(sender));
-        }
-    );
+    // auto button = CCMenuItemExt::createToggler(
+    //     bgOn,
+    //     bgOff,
+    //     [=](CCObject* sender) {
+    //         callback(static_cast<CCMenuItemToggler*>(sender));
+    //     }
+    // );
+    auto button = CCMenuItemToggler::create(bgOff, bgOn, nullptr, nullptr);
     button->setID(id.data());
     m_buttons->addObject(button);
     return button;
