@@ -157,11 +157,11 @@ bool AlliumButtonBar::init(EditorUI* editorUI) {
 }
 
 void AlliumButtonBar::resetToggles(CCObject* sender) {
-    if (sender != m_lineToggle) m_lineToggle->toggle(false);
-    if (sender != m_curveToggle) m_curveToggle->toggle(false);
-    if (sender != m_freeToggle) m_freeToggle->toggle(false);
-    if (sender != m_polygonToggle) m_polygonToggle->toggle(false);
-    if (sender != m_textToggle) m_textToggle->toggle(false);
+    // if (sender != m_lineToggle) m_lineToggle->toggle(false);
+    // if (sender != m_curveToggle) m_curveToggle->toggle(false);
+    // if (sender != m_freeToggle) m_freeToggle->toggle(false);
+    // if (sender != m_polygonToggle) m_polygonToggle->toggle(false);
+    // if (sender != m_textToggle) m_textToggle->toggle(false);
     if (m_brushDrawer) {
         m_brushDrawer->clearOverlay();
         m_brushDrawer->updateLine();
@@ -232,12 +232,12 @@ CCMenuItemToggler* AlliumButtonBar::addToggle(
     //     }
     // );
     auto button = CCMenuItemExt::createSpriteExtra(
-        bg,
+        bgOn,
         [=](CCObject* sender) {
-            callback(static_cast<CCMenuItemSpriteExtra*>(sender));
+            callback(static_cast<CCMenuItemToggler*>(sender));
         }
     );
     button->setID(id.data());
     m_buttons->addObject(button);
-    return button;
+    return reinterpret_cast<CCMenuItemToggler*>(button);
 }
