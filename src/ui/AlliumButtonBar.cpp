@@ -264,7 +264,7 @@ CCMenuItemToggler* AlliumButtonBar::addToggle(
     }
     log::debug("dump: {}", ss.str());
 
-    log::debug("children: {}", button->getChildren());
+    log::debug("children: {}", (void*)button->getChildren());
     
     return button;
 }
