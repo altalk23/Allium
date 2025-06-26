@@ -200,7 +200,7 @@ CCMenuItemSpriteExtra* AlliumButtonBar::addButton(
             callback(static_cast<CCMenuItemSpriteExtra*>(sender));
         }
     );
-    // button->setID(id.data());
+    button->setID(id.data());
     m_buttons->addObject(button);
     return button;
 }
@@ -224,14 +224,20 @@ CCMenuItemToggler* AlliumButtonBar::addToggle(
     auto bgOn = CCSprite::create(bgOnName.data());
     bgOn->addChildAtPosition(sprite, Anchor::Center, ccp(0, 0));
 
-    auto button = CCMenuItemExt::createToggler(
-        bgOn,
-        bgOff,
+    // auto button = CCMenuItemExt::createToggler(
+    //     bgOn,
+    //     bgOff,
+    //     [=](CCObject* sender) {
+    //         callback(static_cast<CCMenuItemToggler*>(sender));
+    //     }
+    // );
+    auto button = CCMenuItemExt::createSpriteExtra(
+        bg,
         [=](CCObject* sender) {
-            callback(static_cast<CCMenuItemToggler*>(sender));
+            callback(static_cast<CCMenuItemSpriteExtra*>(sender));
         }
     );
-    // button->setID(id.data());
+    button->setID(id.data());
     m_buttons->addObject(button);
     return button;
 }
