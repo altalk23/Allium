@@ -11,6 +11,9 @@
 #include <Geode/loader/Dispatch.hpp>
 #include <Geode/loader/Event.hpp>
 
+#include <iomanip>
+#include <sstream>
+
 using namespace allium;
 using namespace geode::prelude;
 
@@ -210,6 +213,14 @@ struct imfedup : Modify<imfedup, CCNode> {
     void onEnter() {
         if (typeinfo_cast<CCMenuItemToggler*>(this)) {
             log::debug("enter node {}", this);
+            std::stringstream ss;
+            ss << std::noshowbase << std::hex << std::setw(2) << std::setfill('0');
+            auto dfjllg = (uint8_t*)this;
+            for (size_t i = 0; i < sizeof(CCMenuItemToggler); i++) {
+                ss << (int)dfjllg[i] << ' ';
+            }
+            log::debug("dump: {}", ss.str());
+
             log::debug("children: {}", this->getChildren());
         }
         CCNode::onEnter();
@@ -235,19 +246,25 @@ CCMenuItemToggler* AlliumButtonBar::addToggle(
     auto bgOn = CCSprite::create(bgOnName.data());
     bgOn->addChildAtPosition(sprite, Anchor::Center, ccp(0, 0));
 
-    // auto button = CCMenuItemExt::createToggler(
-    //     bgOn,
-    //     bgOff,
-    //     [=](CCObject* sender) {
-    //         callback(static_cast<CCMenuItemToggler*>(sender));
-    //     }
-    // );
-    auto button = CCMenuItemToggler::create(
+    auto button = CCMenuItemExt::createToggler(
         bgOn,
         bgOff,
-        nullptr, nullptr
+        [=](CCObject* sender) {
+            callback(static_cast<CCMenuItemToggler*>(sender));
+        }
     );
     button->setID(id.data());
     m_buttons->addObject(button);
+    log::debug("button: {}", button);
+    std::stringstream ss;
+    ss << std::noshowbase << std::hex << std::setw(2) << std::setfill('0');
+    auto dfjllg = (uint8_t*)button;
+    for (size_t i = 0; i < sizeof(CCMenuItemToggler); i++) {
+        ss << (int)dfjllg[i] << ' ';
+    }
+    log::debug("dump: {}", ss.str());
+
+    log::debug("children: {}", button->getChildren());
+    
     return button;
 }
