@@ -98,7 +98,11 @@ void TextBrushDrawer::relocateCursor(cocos2d::CCPoint const& point, bool updateI
         m_isFocused = false;
         this->detachWithIME();
     }
+#if defined(GEODE_IS_ANDROID) || defined(GEODE_IS_IOS)
+    m_cursor = m_boxes.size();
+#else
     m_cursor = closestIndex;
+#endif
 
     this->updateOverlay();
 }
@@ -369,7 +373,10 @@ void TextBrushDrawer::insertText(char const* text, int len, cocos2d::enumKeyCode
         }
         default: {
             m_composition = U"";
-            auto const value = string::utf8ToUtf32(std::string_view{text, (size_t)len}).unwrapOrDefault();
+            auto value = string::utf8ToUtf32(std::string_view{text, (size_t)len}).unwrapOrDefault();
+        #if defined(GEODE_IS_ANDROID) || defined(GEODE_IS_IOS)
+            value.erase(std::remove(value.begin(), value.end(), U'\n'), value.end());
+        #endif
             m_text.insert(m_cursor, value);
             m_cursor += value.size();
             this->updateOverlay();
