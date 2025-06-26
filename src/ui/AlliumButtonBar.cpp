@@ -208,8 +208,10 @@ CCMenuItemSpriteExtra* AlliumButtonBar::addButton(
 #include <Geode/modify/CCNode.hpp>
 struct imfedup : Modify<imfedup, CCNode> {
     void onEnter() {
-        log::debug("enter node {}", this);
-        log::debug("children: {}", this->getChildren());
+        if (typeinfo_cast<CCMenuItemToggler*>(this)) {
+            log::debug("enter node {}", this);
+            log::debug("children: {}", this->getChildren());
+        }
         CCNode::onEnter();
     }
 };
