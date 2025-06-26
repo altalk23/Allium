@@ -201,7 +201,7 @@ CCMenuItemSpriteExtra* AlliumButtonBar::addButton(
         }
     );
     button->setID(id.data());
-    m_buttons->addObject(button);
+    // m_buttons->addObject(button);
     return button;
 }
 
@@ -232,6 +232,6 @@ CCMenuItemToggler* AlliumButtonBar::addToggle(
         }
     );
     button->setID(id.data());
-    m_buttons->addObject(button);
+    // m_buttons->addObject(button);
     return button;
 }
