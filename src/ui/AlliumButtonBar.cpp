@@ -214,14 +214,14 @@ struct imfedup : Modify<imfedup, CCNode> {
         if (typeinfo_cast<CCMenuItemToggler*>(this)) {
             log::debug("enter node {}", this);
             std::stringstream ss;
-            ss << std::noshowbase << std::hex << std::setw(2) << std::setfill('0');
+            ss << std::noshowbase << std::hex << std::setfill('0');
             auto dfjllg = (uint8_t*)this;
             for (size_t i = 0; i < sizeof(CCMenuItemToggler); i++) {
-                ss << (int)dfjllg[i] << ' ';
+                ss << std::setw(2) << (int)dfjllg[i] << ' ';
             }
             log::debug("dump: {}", ss.str());
 
-            log::debug("children: {}", this->getChildren());
+            log::debug("children: {}", (void*)this->getChildren());
         }
         CCNode::onEnter();
     }
