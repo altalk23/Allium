@@ -4,7 +4,7 @@
 using namespace allium;
 using namespace geode::prelude;
 
-std::vector<Point> BaseConverter::simplify(std::vector<Point> const& points) {
+std::vector<Point> BaseConverter::simplify(std::vector<Point> const& points, double threshold) {
     if (points.size() < 2) return points;
 
     float maxDistance = 0;
@@ -26,14 +26,14 @@ std::vector<Point> BaseConverter::simplify(std::vector<Point> const& points) {
     }
 
     std::vector<Point> simplifiedPoints;
-    if (maxDistance <= BrushManager::get()->getFreeThreshold()) {
+    if (maxDistance <= threshold) {
         simplifiedPoints.emplace_back(points.front());
         simplifiedPoints.emplace_back(points.back());
         return simplifiedPoints;
     }
 
-    auto const left = BaseConverter::simplify(std::vector<Point>(points.begin(), points.begin() + maxIndex + 1));
-    auto const right = BaseConverter::simplify(std::vector<Point>(points.begin() + maxIndex, points.end()));
+    auto const left = BaseConverter::simplify(std::vector<Point>(points.begin(), points.begin() + maxIndex + 1), threshold);
+    auto const right = BaseConverter::simplify(std::vector<Point>(points.begin() + maxIndex, points.end()), threshold);
 
     simplifiedPoints.insert(simplifiedPoints.end(), left.begin(), left.end());
     simplifiedPoints.insert(simplifiedPoints.end(), right.begin() + 1, right.end());

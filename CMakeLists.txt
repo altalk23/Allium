@@ -42,21 +42,24 @@ endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
-if (WIN32)
-    # This allows you to compile in debug mode
-    add_compile_definitions(_HAS_ITERATOR_DEBUGGING=0)
-    add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
+CPMAddPackage(
+    GITHUB_REPOSITORY "jhasse/poly2tri"
+    GIT_TAG "13d64e7"
+)
 
-    target_link_libraries(${PROJECT_NAME}
-        glu32
-    )
-else()
-    CPMAddPackage("gh:lunixbochs/glues#44cb7c6")
+set(CLIPPER2_TESTS OFF CACHE BOOL "" FORCE)
+set(CLIPPER2_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(CLIPPER2_UTILS OFF CACHE BOOL "" FORCE)
+set(CLIPPER2_USINGZ OFF CACHE BOOL "" FORCE)
+CPMAddPackage(
+    GITHUB_REPOSITORY "altalk23/Clipper2"
+    GIT_TAG "main"
+    SOURCE_SUBDIR "CPP"
+)
 
-    target_link_libraries(${PROJECT_NAME}
-        GLU
-    )
-endif()
+target_link_libraries(${PROJECT_NAME}
+    poly2tri Clipper2 
+)
 
 # Set up dependencies, resources, and link Geode.
 setup_geode_mod(${PROJECT_NAME})

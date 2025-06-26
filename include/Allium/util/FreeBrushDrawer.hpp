@@ -7,9 +7,7 @@ namespace allium {
     class FreeBrushDrawer : public BrushDrawer {
     protected:
         std::vector<Point> m_points;
-    private:
-
-        std::vector<Point> simplify(std::vector<Point> const& points);
+        
     public:
         static FreeBrushDrawer* create();
         bool init() override;

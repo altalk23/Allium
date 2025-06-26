@@ -53,7 +53,7 @@ std::unique_ptr<BaseConverter> PolygonBrushDrawer::initializeConverter() {
     polygons.emplace_back();
     polygons.back().push_back(m_points);
     return std::make_unique<TriangulatorConverter>(
-        std::move(polygons)
+        std::move(polygons), false
     );
 }
 

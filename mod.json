@@ -85,7 +85,20 @@
 			"description": "(Temporary) The path to the font file",
 			"default": ""
 		},
-		"text-detail": {
+		"text-global-detail": {
+			"type": "float",
+			"control": {
+				"slider-step": 0.01,
+				"arrow-step": 0.01,
+				"big-arrow-step": 0.1
+			},
+			"default": 1.0,
+			"min": 0.1,
+			"name": "Text global detail",
+			"description": "(Temporary) The global detail of the text, only active when curve detail is 0",
+			"max": 2.0
+		},
+		"text-curve-detail": {
 			"type": "float",
 			"control": {
 				"slider-step": 0.01,
@@ -95,7 +108,7 @@
 			"default": 0.1,
 			"min": 0.0,
 			"name": "Text detail",
-			"description": "(Temporary) The detail of the text",
+			"description": "(Temporary) The curve detail of the text, set to 0 and use global detail if using too many objects",
 			"max": 1.0
 		},
 		"text-size": {

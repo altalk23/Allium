@@ -137,7 +137,7 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverterFor(std::u32s
     Point globalPos = pos;
     int32_t lastCharacter = 0;
 
-    auto const textDetail = Mod::get()->getSettingValue<double>("text-detail");
+    auto const textDetail = Mod::get()->getSettingValue<double>("text-curve-detail");
 
     m_boxes.clear();
     for (auto character32 : text) {
@@ -197,7 +197,7 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverterFor(std::u32s
             }
             if (textDetail == 0.0) {
                 // try simplifying the last contour
-                polygons.back().back() = BaseConverter::simplify(polygons.back().back());
+                polygons.back().back() = BaseConverter::simplify(polygons.back().back(), Mod::get()->getSettingValue<double>("text-global-detail"));
             }
         }
 

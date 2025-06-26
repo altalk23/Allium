@@ -12,7 +12,7 @@ namespace allium {
         virtual ~BaseConverter() = default;
         virtual std::vector<std::unique_ptr<Object>> handleExtension() = 0;
 
-        static std::vector<Point> simplify(std::vector<Point> const& points);
+        static std::vector<Point> simplify(std::vector<Point> const& points, double threshold);
         static cocos2d::CCPoint align(cocos2d::CCPoint const& point, cocos2d::CCPoint const& toAlign);
         static cocos2d::CCPoint gridAlign(cocos2d::CCPoint const& point, float gridSize);
     };
