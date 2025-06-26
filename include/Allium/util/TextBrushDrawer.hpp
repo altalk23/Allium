@@ -12,6 +12,7 @@ namespace allium {
     class TextBrushDrawer : public BrushDrawer, public cocos2d::CCIMEDelegate, public ime::IMEExtensionDelegate {
     protected:
         std::u32string m_text;
+        std::string m_u8text;
         std::u32string m_composition;
         std::vector<std::u32string> m_candidates;
         size_t m_candidateIndex = 0;
@@ -54,6 +55,7 @@ namespace allium {
         bool canAttachWithIME() override;
         bool canDetachWithIME() override;
         void insertText(char const* text, int len, cocos2d::enumKeyCodes) override;
+        char const* getContentText() override;
         void deleteBackward() override;
         void deleteForward() override;
         void candidateList(std::vector<std::u32string> const& candidates, size_t currentCandidate) override;

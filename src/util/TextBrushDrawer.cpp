@@ -377,6 +377,10 @@ void TextBrushDrawer::insertText(char const* text, int len, cocos2d::enumKeyCode
         }
     }
 }
+char const* TextBrushDrawer::getContentText() {
+    m_u8text = string::utf32ToUtf8(m_text).unwrapOrDefault();
+    return m_u8text.c_str();
+}
 void TextBrushDrawer::deleteBackward() {
     if (!m_text.empty() && m_cursor > 0) {
         m_text.erase(m_cursor - 1, 1);
