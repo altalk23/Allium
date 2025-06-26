@@ -205,6 +205,15 @@ CCMenuItemSpriteExtra* AlliumButtonBar::addButton(
     return button;
 }
 
+#include <Geode/modify/CCNode.hpp>
+struct imfedup : Modify<imfedup, CCNode> {
+    void onEnter() {
+        log::debug("enter node {}", (void*)this);
+        log::debug("enter node {}", this);
+        CCNode::onEnter();
+    }
+};
+
 CCMenuItemToggler* AlliumButtonBar::addDefaultToggle(
     std::string_view spriteName, std::string_view id, 
     std::function<void(CCMenuItemToggler*)> const& callback
