@@ -16,6 +16,7 @@ using namespace allium;
 struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
     struct Fields {
         geode::Ref<AlliumButtonBar> m_buttonBar;
+        bool m_deselected = false;
     };
 
     $override
@@ -43,7 +44,11 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
             return m_fields->m_buttonBar->getButtonBar();
         }, [this](EditorUI*, bool state, CCNode*) {
             if (!state) {
-                m_fields->m_buttonBar->resetToggles(nullptr);
+                if (!m_fields->m_deselected) m_fields->m_buttonBar->resetToggles(nullptr);
+                m_fields->m_deselected = true;
+            }
+            else {
+                m_fields->m_deselected = false;
             }
         });
 
