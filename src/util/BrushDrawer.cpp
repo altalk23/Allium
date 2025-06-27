@@ -42,27 +42,35 @@ void BrushDrawer::updateLine() {
 
     auto editorLayer = LevelEditorLayer::get();
     auto lastId = -1;
-    auto lastEditorId = editorLayer->m_lastUsedLinkedID;
+    auto currentArray = CCArray::create();
+    // auto lastEditorId = editorLayer->m_lastUsedLinkedID;
 
-    if (!editorLayer->m_linkedGroupDict) editorLayer->m_linkedGroupDict = CCDictionary::create();
+    // if (!editorLayer->m_linkedGroupDict) editorLayer->m_linkedGroupDict = CCDictionary::create();
 
+    
     for (auto const& object : convertedObjects) {
         if (GEODE_UNWRAP_IF_OK(obj, object->addAsGameObject(LevelEditorLayer::get(), lineColorID))) {
-            objects->addObject(obj);
             if (lastId != object->idx) {
+                if (currentArray->count() > 0) {
+                    EditorUI::get()->deselectAll();
+                    EditorUI::get()->selectObjects(currentArray, false);
+                    EditorUI::get()->onGroupSticky(nullptr);
+                    currentArray = CCArray::create();
+                }
                 lastId = object->idx;
-                lastEditorId++;
-                editorLayer->m_lastUsedLinkedID++;
             }
-            obj->m_linkedGroup = lastEditorId;
-            auto group = static_cast<CCArray*>(editorLayer->m_linkedGroupDict->objectForKey(lastEditorId));
-            if (!group) {
-                group = CCArray::create();
-                editorLayer->m_linkedGroupDict->setObject(group, lastEditorId);
-            }
-            group->addObject(obj);
+
+            currentArray->addObject(obj);
+            objects->addObject(obj);
         }
     }
+
+    if (currentArray->count() > 0) {
+        EditorUI::get()->deselectAll();
+        EditorUI::get()->selectObjects(currentArray, false);
+        EditorUI::get()->onGroupSticky(nullptr);
+    }
+    EditorUI::get()->deselectAll();
 
     LevelEditorLayer::get()->m_undoObjects->addObject(
         UndoObject::createWithArray(objects, UndoCommand::Paste)

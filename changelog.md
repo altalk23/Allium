@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.0.4
+ * I hate MacOS (impl linking differently to fix another macos crash)
+
 ## v1.0.3
  * Fix MacOS crash
  * Enable iOS build
