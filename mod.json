@@ -5,7 +5,7 @@
 		"android": "2.2074",
 		"mac": "2.2074"
 	},
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"id": "alk.allium",
 	"name": "Allium Drawing Tool",
 	"developer": "alk",
@@ -92,10 +92,10 @@
 				"arrow-step": 0.01,
 				"big-arrow-step": 0.1
 			},
-			"default": 1.0,
-			"min": 0.1,
-			"name": "Text global detail",
-			"description": "(Temporary) The global detail of the text, only active when curve detail is 0",
+			"default": 0.05,
+			"min": 0.01,
+			"name": "Lower-obj Text roughness",
+			"description": "(Temporary) The roughness of the text, using lower object count, only active when higher-obj text detail is 0",
 			"max": 2.0
 		},
 		"text-curve-detail": {
@@ -105,10 +105,10 @@
 				"arrow-step": 0.01,
 				"big-arrow-step": 0.1
 			},
-			"default": 0.1,
+			"default": 0.0,
 			"min": 0.0,
-			"name": "Text detail",
-			"description": "(Temporary) The curve detail of the text, set to 0 and use global detail if using too many objects",
+			"name": "Higher-obj Text detail",
+			"description": "(Temporary) The detail of the text, using higher object count, set to 0 and use lower-obj text roughness if using too many objects",
 			"max": 1.0
 		},
 		"text-size": {
