@@ -5,6 +5,7 @@
 namespace allium {
     // the EditButtonBar expects all children to be CCMenuItemSpriteExtra and will create a crash otherwise
     // this is intended to be a quick replacement for CCMenuItemExt::createToggler
+    // thanks to https://github.com/hiimjasmine00/BetterEdit/blob/b505161a0bee587f6241201198b1587540ac9e06/src/features/ViewTab/ViewTab.cpp#L25 :)
     class MenuItemTogglerExtra : public CCMenuItemSpriteExtra {
     protected:
         std::function<void(MenuItemTogglerExtra*)> m_callback;
