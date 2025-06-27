@@ -5,7 +5,7 @@
 		"android": "2.2074",
 		"mac": "2.2074"
 	},
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"id": "alk.allium",
 	"name": "Allium Drawing Tool",
 	"developer": "alk",
@@ -92,7 +92,7 @@
 				"arrow-step": 0.01,
 				"big-arrow-step": 0.1
 			},
-			"default": 0.05,
+			"default": 0.1,
 			"min": 0.01,
 			"name": "Lower-obj Text roughness",
 			"description": "(Temporary) The roughness of the text, using lower object count, only active when higher-obj text detail is 0",

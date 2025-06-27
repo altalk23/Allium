@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.3
+ * Fix MacOS crash
+ * Enable iOS build
+
 ## v1.0.2
  * Fixed objects getting deselected on random bar changes
  * Made text defaults much less obj intensive
