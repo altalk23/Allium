@@ -2,6 +2,8 @@
 
 #include <Geode/Geode.hpp>
 
+#include "MenuItemTogglerExtra.hpp"
+
 namespace allium {
     class BrushDrawer;
     class AlliumButtonBar : public cocos2d::CCNode {
@@ -9,11 +11,11 @@ namespace allium {
         geode::Ref<EditButtonBar> m_buttonBar;
         cocos2d::CCArray* m_buttons = nullptr;
 
-        CCMenuItemToggler* m_lineToggle = nullptr;
-        CCMenuItemToggler* m_curveToggle = nullptr;
-        CCMenuItemToggler* m_freeToggle = nullptr;
-        CCMenuItemToggler* m_polygonToggle = nullptr;
-        CCMenuItemToggler* m_textToggle = nullptr;
+        MenuItemTogglerExtra* m_lineToggle = nullptr;
+        MenuItemTogglerExtra* m_curveToggle = nullptr;
+        MenuItemTogglerExtra* m_freeToggle = nullptr;
+        MenuItemTogglerExtra* m_polygonToggle = nullptr;
+        MenuItemTogglerExtra* m_textToggle = nullptr;
         BrushDrawer* m_brushDrawer = nullptr;
 
     public:
@@ -36,14 +38,14 @@ namespace allium {
             std::function<void(CCMenuItemSpriteExtra*)> const& callback
         );
 
-        CCMenuItemToggler* addToggle(
+        MenuItemTogglerExtra* addToggle(
             std::string_view spriteName, std::string_view bgOnName, std::string_view bgOffName, std::string_view id, 
-            std::function<void(CCMenuItemToggler*)> const& callback
+            std::function<void(MenuItemTogglerExtra*)> const& callback
         );
 
-        CCMenuItemToggler* addDefaultToggle(
-            std::string_view spriteName, std::string_view id, 
-            std::function<void(CCMenuItemToggler*)> const& callback
+        MenuItemTogglerExtra* addDefaultToggle(
+            std::string_view spriteName, std::string_view id,
+            std::function<void(MenuItemTogglerExtra*)> const& callback
         );
     };
 }
