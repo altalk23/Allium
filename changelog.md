@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.0.1
+ * Fixed a bug where holes would get filled instead of not filled in text
+
 ## v1.0.0
  * Added support for custom text with a ttf font file
  * Added a text editor to edit the text
