@@ -30,9 +30,9 @@ std::vector<std::unique_ptr<Object>> TriangulatorConverter::handleExtension() {
 
         auto result = Clipper2Lib::Union(contours, Clipper2Lib::FillRule::NonZero);
 
-        // log::debug("Found {} contours in polygon {}", result.size(), polygonIndex);
-        for (size_t i = 0; i < result.size(); ++i) {
-            auto const& contour = result[i];
+        for (auto const& contour : result) {
+            if (!Clipper2Lib::IsPositive(contour)) continue; 
+
             std::vector<std::unique_ptr<p2t::Point>> storage;
             std::vector<p2t::Point*> polyline;
 
@@ -43,10 +43,9 @@ std::vector<std::unique_ptr<Object>> TriangulatorConverter::handleExtension() {
                 polyline.push_back(storage.back().get());
             }
             p2t::CDT cdt{polyline};
-            auto j = i;
-            while (++j < result.size()) {
-                auto const& hole = result[j];
-                if (Clipper2Lib::IsPositive(hole)) break;
+            for (auto const& hole : result) {
+                if (Clipper2Lib::IsPositive(hole)) continue;
+                if (Clipper2Lib::PointInPolygon(hole[0], contour) == Clipper2Lib::PointInPolygonResult::IsOutside) continue;
 
                 // convert the points into the format
                 polyline.clear();
@@ -55,7 +54,6 @@ std::vector<std::unique_ptr<Object>> TriangulatorConverter::handleExtension() {
                     polyline.push_back(storage.back().get());
                 }
                 cdt.AddHole(polyline);
-                ++i;
             }
 
             // i hate this but it uses exceptions
