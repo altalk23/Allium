@@ -205,16 +205,16 @@ CCMenuItemSpriteExtra* AlliumButtonBar::addButton(
     return button;
 }
 
-CCMenuItemToggler* AlliumButtonBar::addDefaultToggle(
-    std::string_view spriteName, std::string_view id, 
-    std::function<void(CCMenuItemToggler*)> const& callback
+MenuItemTogglerExtra* AlliumButtonBar::addDefaultToggle(
+    std::string_view spriteName, std::string_view id,
+    std::function<void(MenuItemTogglerExtra*)> const& callback
 ) {
     return this->addToggle(spriteName, "DeactiveButton.png"_spr, "ActiveButton.png"_spr, id, callback);
 }
 
-CCMenuItemToggler* AlliumButtonBar::addToggle(
+MenuItemTogglerExtra* AlliumButtonBar::addToggle(
     std::string_view spriteName, std::string_view bgOnName, std::string_view bgOffName, std::string_view id, 
-    std::function<void(CCMenuItemToggler*)> const& callback
+    std::function<void(MenuItemTogglerExtra*)> const& callback
 ) {
     auto sprite = CCSprite::createWithSpriteFrameName(spriteName.data());
     auto bgOff = CCSprite::create(bgOffName.data());
@@ -224,12 +224,10 @@ CCMenuItemToggler* AlliumButtonBar::addToggle(
     auto bgOn = CCSprite::create(bgOnName.data());
     bgOn->addChildAtPosition(sprite, Anchor::Center, ccp(0, 0));
 
-    auto button = CCMenuItemExt::createToggler(
+    auto button = MenuItemTogglerExtra::create(
         bgOn,
         bgOff,
-        [=](CCObject* sender) {
-            callback(static_cast<CCMenuItemToggler*>(sender));
-        }
+        callback
     );
     button->setID(id.data());
     m_buttons->addObject(button);

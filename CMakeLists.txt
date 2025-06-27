@@ -17,6 +17,7 @@ add_library(${PROJECT_NAME} SHARED
     src/manager/BrushManager.cpp
     src/ui/AlliumButtonBar.cpp
     src/ui/SupportPopup.cpp
+    src/ui/MenuItemTogglerExtra.cpp
     src/util/BrushDrawer.cpp
     src/util/CurveBrushDrawer.cpp
     src/util/DrawNodeExtension.cpp
