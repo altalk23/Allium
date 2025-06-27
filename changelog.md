@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.2
+ * Fixed objects getting deselected on random bar changes
+ * Made text defaults much less obj intensive
+
 ## v1.0.1
  * Fixed a bug where holes would get filled instead of not filled in text
 
