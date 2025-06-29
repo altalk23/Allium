@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.0.6
+ * Remove debug log in ttf parser
+
 ## v1.0.5
  * Add support for non-BMP characters
  * Add support for Windows Symbol fonts (Wingdings etc.)

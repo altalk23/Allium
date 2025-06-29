@@ -19,7 +19,7 @@
 #define TTFDEBUG_PRINT(...) {}
 #else
 #include <fstream>
-#ifndef _DEBUG
+#ifdef _DEBUG
 #include <stdio.h>
 #define TTFDEBUG_PRINT(...) do {\
 	std::string str;\
@@ -692,7 +692,7 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 		valid_cmap_table = true;
 	}
 	if (!valid_cmap_table)
-		TTFDEBUG_PRINT("ttf-parser: No valid cmap table found\n");
+		TTFDEBUG_PRINT("ttf-parser: No valid cmap table found");
 
 	HHEATable hhea_table;
 	auto hhea_table_entry = table_map.find("hhea");
@@ -1010,7 +1010,7 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 					auto glyph_character_index = 0;
 					if (glyph_reverse_map_find == glyph_reverse_map.end()) {
 						if (glyph_loaded[glyphIndex] == false) {
-							TTFDEBUG_PRINT("ttf-parser: composite glyph of an unseen glyph %d, will load\n", glyphIndex);
+							TTFDEBUG_PRINT("ttf-parser: composite glyph of an unseen glyph %d, will load", glyphIndex);
 							self(0x12345678 + glyphIndex, glyphIndex, self);
 						}
 						glyph_character_index = 0x12345678 + glyphIndex;
@@ -1021,13 +1021,13 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 
 					if (glyph_loaded[glyphIndex] == false) {
 						if (self(glyph_reverse_map_find->second, glyphIndex, self) < 0) {
-							TTFDEBUG_PRINT("ttf-parser: bad glyph index %d in composite glyph\n", glyphIndex);
+							TTFDEBUG_PRINT("ttf-parser: bad glyph index %d in composite glyph", glyphIndex);
 							continue;
 						}
 					}
 					
 					if (glyph_character_index == 0) {
-						TTFDEBUG_PRINT("ttf-parser: null composite %d\n", glyphIndex);
+						TTFDEBUG_PRINT("ttf-parser: null composite %d", glyphIndex);
 						continue;
 					}
 					Glyph& composite_glyph_element = font_data->glyphs[glyph_character_index];
@@ -1055,7 +1055,7 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 							}
 						}
 						else {
-							TTFDEBUG_PRINT("ttf-parser: unsupported matched points in ttf composite glyph\n");
+							TTFDEBUG_PRINT("ttf-parser: unsupported matched points in ttf composite glyph");
 							continue;
 						}
 						current_glyph.path_list.emplace_back(new_path);
