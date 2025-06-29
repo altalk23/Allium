@@ -5,7 +5,7 @@
 #include <alphalaneous.editortab_api/include/EditorTabs.hpp>
 
 #ifdef GEODE_IS_WINDOWS
-#include <geode.custom-keybinds/include/OptionalAPI.hpp>
+#include <geode.custom-keybinds/include/Keybinds.hpp>
 #endif
 
 using namespace geode::prelude;
@@ -57,7 +57,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         // Adds the keybind listener for panning in brush mode
         using namespace keybinds;
 
-        this->template addEventListener<InvokeBindFilterV2>([=](InvokeBindEventV2* event) {
+        this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
             if (event->isDown()) {
                 BrushManager::get()->m_tempPanEditorInBrush = true;
             }
