@@ -19,7 +19,7 @@
 #define TTFDEBUG_PRINT(...) {}
 #else
 #include <fstream>
-#ifdef _DEBUG
+#ifdef TTFDEBUG
 #include <stdio.h>
 #define TTFDEBUG_PRINT(...) do {\
 	std::string str;\
@@ -567,12 +567,14 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 		get2b(&platformID, data + cmap_offset); cmap_offset += sizeof(uint16_t);
 		get2b(&encodingID, data + cmap_offset); cmap_offset += sizeof(uint16_t);
 		get4b(&cmap_subtable_offset, data + cmap_offset); cmap_offset += sizeof(uint32_t);
+		TTFDEBUG_PRINT("cmap table: platformID: %d, encodingID: %d, offset: %d", platformID, encodingID, cmap_subtable_offset);
 
 		auto const getFormat = [&]() {
 			cmap_subtable_offset += cmap_table_entry->second.offsetPos;
 		
 			get2b(&format, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
 			get2b(&length, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
+			TTFDEBUG_PRINT("cmap subtable: format: %d, length: %d", format, length);
 		};
 
 		auto const format4 = [&](bool maskTop = false) {
@@ -597,13 +599,14 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 				get2b(&idRangeOffset[j], data + cmap_subtable_offset + sizeof(uint16_t) * segCount * 2);
 				if (idRangeOffset[j] == 0) {
 					for (uint32_t k = startCount[j]; k <= endCount[j]; k++) {
-						auto glyph_value = (k + idDelta[j]) & 0xFFFF;
+						auto glyph_value = k & 0xFFFF;
 						if (maskTop) glyph_value &= 0x00FF;
 						if (glyph_map.find(glyph_value) != glyph_map.end()) continue; //Already mapped
 
 						auto const glyph_index = k + idDelta[j];
 						glyph_map[glyph_value] = glyph_index;
 						glyph_reverse_map.insert({glyph_index, glyph_value});
+						TTFDEBUG_PRINT("cmap subtable v1: glyph %d mapped to character %x", glyph_index, glyph_value);
 					}
 				}
 				else {
@@ -621,6 +624,7 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 
 						auto const glyph_index = glyph_map_value;
 						glyph_reverse_map.insert({glyph_index, glyph_value});
+						TTFDEBUG_PRINT("cmap subtable v2: glyph %d mapped to character %x", glyph_index, glyph_value);
 					}
 				}
 				cmap_subtable_offset += sizeof(uint16_t);
@@ -642,6 +646,7 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 					auto const glyphIndex = glyphID + (k - startCharCode);
 					glyph_map[k] = glyphIndex;
 					glyph_reverse_map.insert({glyphIndex, k});
+					TTFDEBUG_PRINT("cmap subtable v3: glyph %d mapped to character %x", glyphIndex, k);
 				}
 			}
 		};

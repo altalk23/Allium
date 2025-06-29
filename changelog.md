@@ -2,6 +2,7 @@
 
 ## v1.0.6
  * Remove debug log in ttf parser
+ * Fix broken ttf parsing shifting glyphs
 
 ## v1.0.5
  * Add support for non-BMP characters
