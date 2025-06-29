@@ -22,7 +22,7 @@
 		},
 		"geode.custom-keybinds": {
             "version": ">=1.7.1",
-            "importance": "recommended",
+            "importance": "required",
 			"platforms": ["win"]
         },
 		"alk.ime-input": {

@@ -17,4 +17,6 @@ If you like my work you can support me from my [Ko-Fi](https://ko-fi.com/alk1m12
  * [Geode: BSL 1.0](https://github.com/geode-sdk/geode/blob/main/LICENSE.txt)
  * [Anti-Grain Geometry: 3-Clause BSD](https://github.com/ghaerr/agg-2.6/blob/master/README.md)
  * [Poly2tri: 3-Clause BSD](https://github.com/jhasse/poly2tri/blob/master/LICENSE)
- * [Clipper2: BSL 1.0](https://github.com/AngusJohnson/Clipper2/blob/main/LICENSE)
+ * [Boost.Geometry: BSL 1.0](https://github.com/boostorg/geometry/blob/master/LICENSE_1_0.txt)
+ * [ttf-parser: MIT](https://github.com/kv01/ttf-parser/blob/master/LICENSE)
+ * [geometry::correct: Custom](https://github.com/kleunen/boost_geometry_correct/blob/main/README.md#license)

@@ -117,13 +117,13 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 Result<> addKeybinds() {
     using namespace keybinds;
 
-    GEODE_UNWRAP(BindManagerV2::registerBindable(GEODE_UNWRAP(BindableActionV2::create(
+    BindManager::get()->registerBindable({
         "pan-editor-in-brush"_spr,
         "Pan Editor In Brush Mode",
         "Allows you to pan in the editor when you have brush enabled.",
-        { GEODE_UNWRAP(KeybindV2::create(KEY_Space)) },
-        GEODE_UNWRAP(CategoryV2::create("Allium/Brushes"))
-    ))));
+        { Keybind::create(KEY_Space) },
+        "Allium/Brushes"
+    });
 
     return Ok();
 }
