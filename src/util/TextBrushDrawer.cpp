@@ -141,7 +141,7 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverterFor(std::u32s
     Point globalPos = pos;
     int32_t lastCharacter = 0;
 
-    auto const textDetail = Mod::get()->getSettingValue<double>("text-detail");
+    auto const textDetail = Mod::get()->getSettingValue<double>("text-detail-threshold");
 
     m_boxes.clear();
     for (auto character32 : text) {
