@@ -5,7 +5,7 @@
 #include <alphalaneous.editortab_api/include/EditorTabs.hpp>
 
 #ifdef GEODE_IS_WINDOWS
-#include <geode.custom-keybinds/include/Keybinds.hpp>
+#include <geode.custom-keybinds/include/OptionalAPI.hpp>
 #endif
 
 using namespace geode::prelude;
@@ -57,7 +57,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         // Adds the keybind listener for panning in brush mode
         using namespace keybinds;
 
-        this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
+        this->template addEventListener<InvokeBindFilterV2>([=](InvokeBindEventV2* event) {
             if (event->isDown()) {
                 BrushManager::get()->m_tempPanEditorInBrush = true;
             }
@@ -114,16 +114,22 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
 #ifdef GEODE_IS_WINDOWS
 
-$execute {
+Result<> addKeybinds() {
     using namespace keybinds;
 
-    BindManager::get()->registerBindable({
+    GEODE_UNWRAP(BindManagerV2::registerBindable(GEODE_UNWRAP(BindableActionV2::create(
         "pan-editor-in-brush"_spr,
         "Pan Editor In Brush Mode",
         "Allows you to pan in the editor when you have brush enabled.",
-        { Keybind::create(KEY_Space) },
-        "Allium/Brushes"
-    });
+        { GEODE_UNWRAP(KeybindV2::create(KEY_Space)) },
+        GEODE_UNWRAP(CategoryV2::create("Allium/Brushes"))
+    ))));
+
+    return Ok();
+}
+
+$execute {
+    (void)addKeybinds();
 }
 
 #endif

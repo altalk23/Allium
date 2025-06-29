@@ -141,7 +141,7 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverterFor(std::u32s
     Point globalPos = pos;
     int32_t lastCharacter = 0;
 
-    auto const textDetail = Mod::get()->getSettingValue<double>("text-curve-detail");
+    auto const textDetail = Mod::get()->getSettingValue<double>("text-detail");
 
     m_boxes.clear();
     for (auto character32 : text) {
@@ -158,6 +158,10 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverterFor(std::u32s
         if (character == '\n') {
             globalPos.x = m_origin.x;
             globalPos.y -= m_lineHeight;
+            continue;
+        }
+        if (character == '\r') {
+            // Ignore carriage return
             continue;
         }
 
@@ -178,9 +182,9 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverterFor(std::u32s
         for (const auto& path_list : glyph_iterator->second.path_list) {
             polygons.back().emplace_back(); // Create a new contour for each path in the glyph
             for (const auto& geometry : path_list.geometry) {
-                if (textDetail > 0.0 && geometry.is_curve) {
+                if (geometry.is_curve) {
                     auto generator = agg::curve3_div();
-                    generator.approximation_scale(textDetail);
+                    generator.approximation_scale(1.0);
                     generator.init(
                         geometry.p0.x, geometry.p0.y,
                         geometry.p1.x, geometry.p1.y,
@@ -199,10 +203,6 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverterFor(std::u32s
                     polygons.back().back().push_back(pos + glyphPos);
                 }
             }
-            if (textDetail == 0.0) {
-                // try simplifying the last contour
-                polygons.back().back() = BaseConverter::simplify(polygons.back().back(), Mod::get()->getSettingValue<double>("text-global-detail"));
-            }
         }
 
         globalPos.x += glyph_iterator->second.advance_width * m_fontScale;
@@ -217,7 +217,7 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverterFor(std::u32s
     }
     m_endPos = globalPos;
     return std::make_unique<TriangulatorConverter>(
-        std::move(polygons)
+        std::move(polygons), textDetail, true
     );
 }
 
@@ -278,7 +278,10 @@ void TextBrushDrawer::updateLine() {
     BrushDrawer::updateLine();
 
     m_updatedOrigin = false;
-    m_isFocused = false;
+    if (m_isFocused) {
+        this->detachWithIME();
+        m_isFocused = false;
+    }
     m_text.clear();
     m_composition.clear();
     m_cursor = 0;

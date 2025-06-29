@@ -9,10 +9,11 @@ namespace allium {
         using Polygon = std::vector<Contour>;
     private:
         std::vector<Polygon> m_polygons;
+        double m_detail;
         bool m_handleHoles;
 
     public:
-        TriangulatorConverter(std::vector<Polygon>&& polygons, bool handleHoles = true);
+        TriangulatorConverter(std::vector<Polygon>&& polygons, double detail, bool handleHoles = true);
         ~TriangulatorConverter() override = default;
 
         std::vector<std::unique_ptr<Object>> handleExtension() override;

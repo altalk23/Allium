@@ -6,7 +6,7 @@
 		"mac": "2.2074",
 		"ios": "2.2074"
 	},
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"id": "alk.allium",
 	"name": "Allium Drawing Tool",
 	"developer": "alk",
@@ -22,7 +22,7 @@
 		},
 		"geode.custom-keybinds": {
             "version": ">=1.7.1",
-            "importance": "required",
+            "importance": "recommended",
 			"platforms": ["win"]
         },
 		"alk.ime-input": {
@@ -78,7 +78,7 @@
 			"default": 0.4,
 			"min": 0.01,
 			"name": "Free Threshold",
-			"description": "(Temporary) The threshold of the free tool and text optimizaion",
+			"description": "(Temporary) Value in game units where a point is decimated if its distance to the segment is less than this value",
 			"max": 1.5
 		},
 		"font-path": {
@@ -86,31 +86,13 @@
 			"description": "(Temporary) The path to the font file",
 			"default": ""
 		},
-		"text-global-detail": {
+		"text-detail-threshold": {
 			"type": "float",
-			"control": {
-				"slider-step": 0.01,
-				"arrow-step": 0.01,
-				"big-arrow-step": 0.1
-			},
-			"default": 0.1,
+			"default": 0.3,
 			"min": 0.01,
-			"name": "Lower-obj Text roughness",
-			"description": "(Temporary) The roughness of the text, using lower object count, only active when higher-obj text detail is 0",
-			"max": 2.0
-		},
-		"text-curve-detail": {
-			"type": "float",
-			"control": {
-				"slider-step": 0.01,
-				"arrow-step": 0.01,
-				"big-arrow-step": 0.1
-			},
-			"default": 0.0,
-			"min": 0.0,
-			"name": "Higher-obj Text detail",
-			"description": "(Temporary) The detail of the text, using higher object count, set to 0 and use lower-obj text roughness if using too many objects",
-			"max": 1.0
+			"name": "Text detail threshold",
+			"description": "(Temporary) Value in game units where a point is decimated if its distance to the segment is less than this value",
+			"max": 10.0
 		},
 		"text-size": {
 			"type": "float",

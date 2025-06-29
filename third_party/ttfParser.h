@@ -19,11 +19,17 @@
 #define TTFDEBUG_PRINT(...) {}
 #else
 #include <fstream>
-#ifdef _DEBUG
+#ifndef _DEBUG
 #include <stdio.h>
-#define TTFDEBUG_PRINT(...) printf(__VA_ARGS__)
+#define TTFDEBUG_PRINT(...) do {\
+	std::string str;\
+	auto size = snprintf(nullptr, 0, __VA_ARGS__);\
+	str.resize(size);\
+	snprintf(&str[0], size + 1, __VA_ARGS__);\
+	geode::log::debug("{}", str);\
+} while (0)
 #else
-#define TTFDEBUG_PRINT(...) {}
+#define TTFDEBUG_PRINT(...) do { } while (0)
 #endif
 #endif
 
@@ -557,60 +563,133 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 	for (uint16_t i = 0; i < cmap_num_tables; i++) {
 		uint16_t platformID, encodingID;
 		uint32_t cmap_subtable_offset;
+		uint16_t format, length;
 		get2b(&platformID, data + cmap_offset); cmap_offset += sizeof(uint16_t);
 		get2b(&encodingID, data + cmap_offset); cmap_offset += sizeof(uint16_t);
 		get4b(&cmap_subtable_offset, data + cmap_offset); cmap_offset += sizeof(uint32_t);
 
-		if (!((platformID == 0 && encodingID == 3) || (platformID == 3 && encodingID == 1))) //unsupported encoding
-			continue;
+		auto const getFormat = [&]() {
+			cmap_subtable_offset += cmap_table_entry->second.offsetPos;
+		
+			get2b(&format, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
+			get2b(&length, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
+		};
 
-		cmap_subtable_offset += cmap_table_entry->second.offsetPos;
-		uint16_t format, length;
-		get2b(&format, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
-		get2b(&length, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
+		auto const format4 = [&](bool maskTop = false) {
+			uint16_t language, segCountX2;// , searchRange, entrySelector, rangeShift;
+			get2b(&language, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
+			get2b(&segCountX2, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
+			//get2b(&searchRange, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
+			//get2b(&entrySelector, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
+			//get2b(&rangeShift, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
+			cmap_subtable_offset += sizeof(uint16_t) * 3;
 
-		if (format != 4)
-			continue;
-
-		uint16_t language, segCountX2;// , searchRange, entrySelector, rangeShift;
-		get2b(&language, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
-		get2b(&segCountX2, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
-		//get2b(&searchRange, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
-		//get2b(&entrySelector, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
-		//get2b(&rangeShift, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
-		cmap_subtable_offset += sizeof(uint16_t) * 3;
-
-		uint16_t segCount = segCountX2 >> 1;
-		std::vector<uint16_t> endCount(segCount), startCount(segCount), idRangeOffset(segCount);
-		std::vector<int16_t> idDelta(segCount);
-		for (uint16_t j = 0; j < segCount; j++) {
-			get2b(&endCount[j], data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
-		}
-		cmap_subtable_offset += sizeof(uint16_t);
-		for (uint16_t j = 0; j < segCount; j++) {
-			get2b(&startCount[j], data + cmap_subtable_offset);
-			get2b(&idDelta[j], data + cmap_subtable_offset + sizeof(uint16_t) * segCount);
-			get2b(&idRangeOffset[j], data + cmap_subtable_offset + sizeof(uint16_t) * segCount * 2);
-			if (idRangeOffset[j] == 0) {
-				for (uint32_t k = startCount[j]; k <= endCount[j]; k++) {
-					glyph_map[k] = k + idDelta[j];
-					glyph_reverse_map.insert({k + idDelta[j], k});
-				}
-			}
-			else {
-				uint32_t glyph_address_offset = cmap_subtable_offset + sizeof(uint16_t) * segCount * 2; //idRangeOffset_ptr
-				for (uint32_t k = startCount[j]; k <= endCount[j]; k++) {
-					uint32_t glyph_address_index_offset = idRangeOffset[j] + 2 * (k - startCount[j]) + glyph_address_offset;
-					uint16_t& glyph_map_value = glyph_map[k];
-					get2b(&glyph_map_value, data + glyph_address_index_offset);
-					glyph_map_value += idDelta[j];
-					glyph_reverse_map.insert({glyph_map_value, k});
-				}
+			uint16_t segCount = segCountX2 >> 1;
+			std::vector<uint16_t> endCount(segCount), startCount(segCount), idRangeOffset(segCount);
+			std::vector<int16_t> idDelta(segCount);
+			for (uint16_t j = 0; j < segCount; j++) {
+				get2b(&endCount[j], data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint16_t);
 			}
 			cmap_subtable_offset += sizeof(uint16_t);
+			for (uint16_t j = 0; j < segCount; j++) {
+				get2b(&startCount[j], data + cmap_subtable_offset);
+				get2b(&idDelta[j], data + cmap_subtable_offset + sizeof(uint16_t) * segCount);
+				get2b(&idRangeOffset[j], data + cmap_subtable_offset + sizeof(uint16_t) * segCount * 2);
+				if (idRangeOffset[j] == 0) {
+					for (uint32_t k = startCount[j]; k <= endCount[j]; k++) {
+						auto glyph_value = (k + idDelta[j]) & 0xFFFF;
+						if (maskTop) glyph_value &= 0x00FF;
+						if (glyph_map.find(glyph_value) != glyph_map.end()) continue; //Already mapped
+
+						auto const glyph_index = k + idDelta[j];
+						glyph_map[glyph_value] = glyph_index;
+						glyph_reverse_map.insert({glyph_index, glyph_value});
+					}
+				}
+				else {
+					uint32_t glyph_address_offset = cmap_subtable_offset + sizeof(uint16_t) * segCount * 2; //idRangeOffset_ptr
+					for (uint32_t k = startCount[j]; k <= endCount[j]; k++) {
+						auto glyph_value = k & 0xFFFF;
+						if (maskTop) glyph_value &= 0x00FF; //Mask top byte
+						if (glyph_map.find(glyph_value) != glyph_map.end()) continue; //Already mapped
+						
+
+						uint32_t glyph_address_index_offset = idRangeOffset[j] + 2 * (k - startCount[j]) + glyph_address_offset;
+						uint16_t& glyph_map_value = glyph_map[glyph_value];
+						get2b(&glyph_map_value, data + glyph_address_index_offset);
+						glyph_map_value += idDelta[j];
+
+						auto const glyph_index = glyph_map_value;
+						glyph_reverse_map.insert({glyph_index, glyph_value});
+					}
+				}
+				cmap_subtable_offset += sizeof(uint16_t);
+			}
+		};
+
+		auto const format12 = [&]() {
+			uint32_t length, language, nGroups;
+			get4b(&length, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint32_t);
+			get4b(&language, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint32_t);
+			get4b(&nGroups, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint32_t);
+			for (uint32_t j = 0; j < nGroups; j++) {
+				uint32_t startCharCode, endCharCode, glyphID;
+				get4b(&startCharCode, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint32_t);
+				get4b(&endCharCode, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint32_t);
+				get4b(&glyphID, data + cmap_subtable_offset); cmap_subtable_offset += sizeof(uint32_t);
+				for (uint32_t k = startCharCode; k <= endCharCode; k++) {
+					if (glyph_map.find(k) != glyph_map.end()) continue; //Already mapped
+					auto const glyphIndex = glyphID + (k - startCharCode);
+					glyph_map[k] = glyphIndex;
+					glyph_reverse_map.insert({glyphIndex, k});
+				}
+			}
+		};
+
+		if (platformID == 0) {
+			if (encodingID == 3) { //Unicode BMP
+				getFormat();
+				if (format == 4) {
+					format4();					
+				}
+				else continue;
+			}
+			else if (encodingID == 4) { //Unicode full
+				getFormat();
+				if (format == 4) {
+					format12();
+				}
+				else continue;
+			}
+		}
+		else if (platformID == 3) {
+			if (encodingID == 0) { //Symbol
+				getFormat();
+				if (format == 4) {
+					format4(true); //Mask top byte
+				}
+				else continue;
+			}
+			if (encodingID == 1) { //Unicode BMP
+				getFormat();
+				if (format == 4) {
+					format4();
+				}
+				else continue;
+			}
+			else if (encodingID == 10) { //Unicode full
+				getFormat();
+				if (format == 12) {
+					format12();
+				}
+				else continue;
+			}
+			else continue;
+		}
+		else {
+			continue; //Unsupported platform/encoding
 		}
 		valid_cmap_table = true;
-		break;
 	}
 	if (!valid_cmap_table)
 		TTFDEBUG_PRINT("ttf-parser: No valid cmap table found\n");
@@ -647,8 +726,8 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 	memset(glyph_loaded, 0, sizeof(bool) * max_profile.numGlyphs);
 
 	auto parse_glyph = [&](uint32_t glyph_character_index, uint16_t i, auto&& self) -> int8_t {
-		// if (glyph_loaded[i] == true)
-		// 	return 1;
+		if (glyph_loaded[i] == true)
+			return 1;
 
 		Glyph& current_glyph = font_data->glyphs[glyph_character_index];
 		current_glyph.glyph_index = i;
@@ -928,9 +1007,16 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 						current_offset += sizeof(uint8_t) * num_instructions;
 					}
 					auto glyph_reverse_map_find = glyph_reverse_map.find(glyphIndex);
+					auto glyph_character_index = 0;
 					if (glyph_reverse_map_find == glyph_reverse_map.end()) {
-						TTFDEBUG_PRINT("ttf-parser: composite glyph of an unseen glyph %d\n", glyphIndex);
-						continue;
+						if (glyph_loaded[glyphIndex] == false) {
+							TTFDEBUG_PRINT("ttf-parser: composite glyph of an unseen glyph %d, will load\n", glyphIndex);
+							self(0x12345678 + glyphIndex, glyphIndex, self);
+						}
+						glyph_character_index = 0x12345678 + glyphIndex;
+					}
+					else {
+						glyph_character_index = glyph_reverse_map_find->second;
 					}
 
 					if (glyph_loaded[glyphIndex] == false) {
@@ -940,9 +1026,8 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 						}
 					}
 					
-					const auto glyph_character_index = glyph_reverse_map_find->second;
 					if (glyph_character_index == 0) {
-						//TTFDEBUG_PRINT("ttf-parser: null composite %d\n", glyphIndex);
+						TTFDEBUG_PRINT("ttf-parser: null composite %d\n", glyphIndex);
 						continue;
 					}
 					Glyph& composite_glyph_element = font_data->glyphs[glyph_character_index];
@@ -985,9 +1070,6 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 	for (uint16_t i = 0; i < max_profile.numGlyphs; i++) {
 		for (auto[itr, rangeEnd] = glyph_reverse_map.equal_range(i); itr != rangeEnd; ++itr) {
 			uint32_t glyph_character_index = itr->second;
-			if (glyph_character_index == 0x8a00) {
-				geode::log::debug("found glyph with character index 0x8a00");
-			}
 			parse_glyph(glyph_character_index, i, parse_glyph);
 		}
 	}

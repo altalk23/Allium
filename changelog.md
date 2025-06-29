@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.5
+ * Add support for non-BMP characters
+ * Add support for Windows Symbol fonts (Wingdings etc.)
+ * Fix lots of tessellation issues
+ * Fix a bug where you would be able to write after finalizing the text
+
 ## v1.0.4
  * I hate MacOS (impl linking differently to fix another macos crash)
 

@@ -8,7 +8,7 @@ else()
 endif()
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-project(Allium VERSION 0.4.0)
+project(Allium VERSION 1.0.5)
 
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
@@ -52,18 +52,16 @@ CPMAddPackage(
     GIT_TAG "13d64e7"
 )
 
-set(CLIPPER2_TESTS OFF CACHE BOOL "" FORCE)
-set(CLIPPER2_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(CLIPPER2_UTILS OFF CACHE BOOL "" FORCE)
-set(CLIPPER2_USINGZ OFF CACHE BOOL "" FORCE)
 CPMAddPackage(
-    GITHUB_REPOSITORY "altalk23/Clipper2"
-    GIT_TAG "main"
-    SOURCE_SUBDIR "CPP"
+    NAME Boost
+    VERSION 1.88.0 # Versions less than 1.85.0 may need patches for installation targets.
+    URL https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.7z
+    OPTIONS "BOOST_ENABLE_CMAKE ON" "BOOST_SKIP_INSTALL_RULES ON" # Set `OFF` for installation
+            "BUILD_SHARED_LIBS OFF" "BOOST_INCLUDE_LIBRARIES geometry" # Note the escapes!
 )
 
 target_link_libraries(${PROJECT_NAME}
-    poly2tri Clipper2 
+    poly2tri Boost::geometry 
 )
 
 # Set up dependencies, resources, and link Geode.
