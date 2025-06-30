@@ -29,31 +29,57 @@ std::vector<std::vector<std::unique_ptr<Object>>> ParallelogratorConverter::hand
     auto const areParallel = [&](BoostPoint const& a, BoostPoint const& b, BoostPoint const& c, BoostPoint const& d) {
         auto const ab = vectorBetween(a, b);
         auto const cd = vectorBetween(c, d);
-        return std::abs(cross(ab, cd)) < 1e-2;
+        return std::abs(cross(ab, cd)) < 1e-1;
+    };
+
+    using Edge = std::pair<Point, Point>;
+    auto const addToMap = [&](auto& triangleMap, Edge edge, Triangle const* triangle) {
+        if (edge.first > edge.second) {
+            std::swap(edge.first, edge.second);
+        }
+        if (triangleMap.find(edge) == triangleMap.end()) {
+            triangleMap[edge] = std::vector<Triangle const*>();
+        }
+        triangleMap[edge].push_back(triangle);
     };
 
     std::vector<std::vector<std::unique_ptr<Object>>> newObjects;
 
     for (auto& triangles : trianglesList) {
-        std::unordered_set<size_t> processedTriangles;
+        std::map<Edge, std::vector<Triangle const*>> triangleMap;
+        std::unordered_map<Triangle const*, std::vector<Triangle const*>> triangleNeighbors;
+
+        for (auto& triangle : triangles) {
+            auto const* t = static_cast<Triangle const*>(triangle.get());
+            addToMap(triangleMap, Edge(t->p1, t->p2), t);
+            addToMap(triangleMap, Edge(t->p2, t->p3), t);
+            addToMap(triangleMap, Edge(t->p3, t->p1), t);
+        }
+
+        for (auto& [edge, neighbors] : triangleMap) {
+            if (neighbors.size() == 2) {
+                auto const& t1 = neighbors[0];
+                auto const& t2 = neighbors[1];
+                triangleNeighbors[t1].push_back(t2);
+                triangleNeighbors[t2].push_back(t1);
+            }
+        }
+
+        std::unordered_set<Triangle const*> processedTriangles;
         newObjects.emplace_back();
 
-        // better than nothing honestly
-        for (size_t i = 0; i < triangles.size(); ++i) {
-            if (processedTriangles.count(i)) continue;
+        for (auto& triangle : triangles) {
+            auto const* t1 = static_cast<Triangle const*>(triangle.get());
+            for (auto const* t2 : triangleNeighbors[t1]) {
+                if (processedTriangles.count(t1) || processedTriangles.count(t2)) continue;
 
-            auto const& t1 = static_cast<Triangle const&>(*triangles[i]);
-            auto const& p1 = t1.p1;
-            auto const& p2 = t1.p2;
-            auto const& p3 = t1.p3;
+                auto const& p1 = t1->p1;
+                auto const& p2 = t1->p2;
+                auto const& p3 = t1->p3;
 
-            for (size_t j = i + 1; j < triangles.size(); ++j) {
-                if (processedTriangles.count(i)) continue;
-
-                auto const& t2 = static_cast<Triangle const&>(*triangles[j]);
-                auto const& q1 = t2.p1;
-                auto const& q2 = t2.p2;
-                auto const& q3 = t2.p3;
+                auto const& q1 = t2->p1;
+                auto const& q2 = t2->p2;
+                auto const& q3 = t2->p3;
 
                 BoostMultiPoint mp;
                 mp.push_back(BoostPoint(p1.x, p1.y));
@@ -62,18 +88,6 @@ std::vector<std::vector<std::unique_ptr<Object>>> ParallelogratorConverter::hand
                 mp.push_back(BoostPoint(q1.x, q1.y));
                 mp.push_back(BoostPoint(q2.x, q2.y));
                 mp.push_back(BoostPoint(q3.x, q3.y));
-
-                size_t equalCount = 0;
-                if (p1 == q1) ++equalCount;
-                if (p1 == q2) ++equalCount;
-                if (p1 == q3) ++equalCount;
-                if (p2 == q1) ++equalCount;
-                if (p2 == q2) ++equalCount;
-                if (p2 == q3) ++equalCount;
-                if (p3 == q1) ++equalCount;
-                if (p3 == q2) ++equalCount;
-                if (p3 == q3) ++equalCount;
-                if (equalCount != 2) continue; // need 2 equals
 
                 BoostRing hull;
                 boost::geometry::convex_hull(mp, hull);
@@ -84,8 +98,8 @@ std::vector<std::vector<std::unique_ptr<Object>>> ParallelogratorConverter::hand
                     auto const& w4 = hull[3];
 
                     if (areParallel(w1, w2, w3, w4) && areParallel(w2, w3, w4, w1)) {
-                        processedTriangles.insert(i);
-                        processedTriangles.insert(j);
+                        processedTriangles.insert(t1);
+                        processedTriangles.insert(t2);
 
                         newObjects.back().push_back(std::make_unique<Parallelogram>(
                             Point(w1.x(), w1.y()), 
@@ -99,9 +113,10 @@ std::vector<std::vector<std::unique_ptr<Object>>> ParallelogratorConverter::hand
             }
         }
 
-        for (size_t i = 0; i < triangles.size(); ++i) {
-            if (!processedTriangles.count(i)) {
-                newObjects.back().push_back(std::move(triangles[i]));
+        for (auto& triangle : triangles) {
+            auto const* t = static_cast<Triangle const*>(triangle.get());
+            if (!processedTriangles.count(t)) {
+                newObjects.back().push_back(std::move(triangle));
             }
         }
     }
