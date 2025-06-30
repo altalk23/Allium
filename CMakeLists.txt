@@ -8,7 +8,7 @@ else()
 endif()
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-project(Allium VERSION 1.0.6)
+project(Allium VERSION 1.0.7)
 
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
@@ -28,6 +28,7 @@ add_library(${PROJECT_NAME} SHARED
     src/util/converter/BaseConverter.cpp
     src/util/converter/PolylineConverter.cpp
     src/util/converter/TriangulatorConverter.cpp
+    src/util/converter/ParallelogratorConverter.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

@@ -1,6 +1,6 @@
 #include <util/TextBrushDrawer.hpp>
 #include <manager/BrushManager.hpp>
-#include <util/converter/TriangulatorConverter.hpp>
+#include <util/converter/ParallelogratorConverter.hpp>
 #include <agg-2.6/agg_curves.h>
 #include <Geode/loader/Dispatch.hpp>
 #include <Geode/loader/Event.hpp>
@@ -55,7 +55,7 @@ void TextBrushDrawer::initFontData() {
     if (binaryData) {
         int error = TTFFontParser::parse_data((const char*)binaryData.unwrap().data(), m_fontData.get());
         if (error == 0) {
-            log::debug("TTF font data parsed successfully");
+            // log::debug("TTF font data parsed successfully");
         }
         else {
             log::error("Failed to parse TTF font data: error code {}", error);
@@ -216,7 +216,7 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverterFor(std::u32s
         };
     }
     m_endPos = globalPos;
-    return std::make_unique<TriangulatorConverter>(
+    return std::make_unique<ParallelogratorConverter>(
         std::move(polygons), textDetail, true
     );
 }
@@ -238,19 +238,25 @@ void TextBrushDrawer::updateOverlay() {
     }
     auto convertedObjects = this->initializeConverterFor(text, m_origin)->handleExtension();
 
-    for (auto const& object : convertedObjects) {
-        auto const i = object->idx;
+    for (size_t i = 0; i < convertedObjects.size(); ++i) {
+        auto const& objectList = convertedObjects[i];
         if (i >= m_cursor && i < m_cursor + m_composition.size()) {
             // Highlight the composition part
-            (void)object->drawIntoDrawNode(m_overlay, ccc3(255, 0, 0));
+            for (auto const& object : objectList) {
+                (void)object->drawIntoDrawNode(m_overlay, ccc3(255, 0, 0));
+            }
         }
         else if (i >= candidateOffset && i < candidateOffset + candidateText.size()) {
             // Highlight the candidate part
-            (void)object->drawIntoDrawNode(m_overlay, ccc3(255, 0, 255));
+            for (auto const& object : objectList) {
+                (void)object->drawIntoDrawNode(m_overlay, ccc3(255, 0, 255));
+            }
         }
         else {
             // Draw the rest normally
-            (void)object->drawIntoDrawNode(m_overlay, BrushManager::get()->getColor());
+            for (auto const& object : objectList) {
+                (void)object->drawIntoDrawNode(m_overlay, BrushManager::get()->getColor());
+            }
         }
     }
 
@@ -413,6 +419,6 @@ void TextBrushDrawer::candidateList(std::vector<std::u32string> const& candidate
 }
 void TextBrushDrawer::composition(std::u32string const& compositionString) {
     m_composition = compositionString;
-    log::debug("Composition updated: {}", string::utf32ToUtf8(m_composition).unwrapOrDefault());
+    // log::debug("Composition updated: {}", string::utf32ToUtf8(m_composition).unwrapOrDefault());
     this->updateOverlay();
 }

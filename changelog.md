@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.7
+ * Fix some fonts with multiple overlapping intersecting points by literally adding a random value to the points
+ * Implement a parallelogram combination step thats pretty simple to shut up some people
+
 ## v1.0.6
  * Remove debug log in ttf parser
  * Fix broken ttf parsing shifting glyphs

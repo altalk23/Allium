@@ -23,8 +23,10 @@ void BrushDrawer::updateOverlay() {
 
     auto lineColor = BrushManager::get()->getColor();
 
-    for (auto const& object : convertedObjects) {
-        (void)object->drawIntoDrawNode(m_overlay, lineColor);
+    for (auto const& objectList : convertedObjects) {
+        for (auto const& object : objectList) {
+            (void)object->drawIntoDrawNode(m_overlay, lineColor);
+        }
     }
 }
 void BrushDrawer::clearOverlay() {
@@ -41,36 +43,26 @@ void BrushDrawer::updateLine() {
     auto objects = CCArray::create();
 
     auto editorLayer = LevelEditorLayer::get();
-    auto lastId = -1;
-    auto currentArray = CCArray::create();
     // auto lastEditorId = editorLayer->m_lastUsedLinkedID;
 
     // if (!editorLayer->m_linkedGroupDict) editorLayer->m_linkedGroupDict = CCDictionary::create();
 
-    
-    for (auto const& object : convertedObjects) {
-        if (GEODE_UNWRAP_IF_OK(obj, object->addAsGameObject(LevelEditorLayer::get(), lineColorID))) {
-            if (lastId != object->idx) {
-                if (currentArray->count() > 0) {
-                    EditorUI::get()->deselectAll();
-                    EditorUI::get()->selectObjects(currentArray, false);
-                    EditorUI::get()->onGroupSticky(nullptr);
-                    currentArray = CCArray::create();
-                }
-                lastId = object->idx;
+    // log::debug("Adding {} object groups", convertedObjects.size());
+    for (auto const& objectList : convertedObjects) {
+        auto currentArray = CCArray::create();
+        // log::debug("Processing {} objects in group", objectList.size());
+        for (auto const& object : objectList) {
+            if (GEODE_UNWRAP_IF_OK(obj, object->addAsGameObject(LevelEditorLayer::get(), lineColorID))) {
+                currentArray->addObject(obj);
+                objects->addObject(obj);
             }
-
-            currentArray->addObject(obj);
-            objects->addObject(obj);
         }
-    }
 
-    if (currentArray->count() > 0) {
         EditorUI::get()->deselectAll();
         EditorUI::get()->selectObjects(currentArray, false);
         EditorUI::get()->onGroupSticky(nullptr);
+        EditorUI::get()->deselectAll();
     }
-    EditorUI::get()->deselectAll();
 
     LevelEditorLayer::get()->m_undoObjects->addObject(
         UndoObject::createWithArray(objects, UndoCommand::Paste)

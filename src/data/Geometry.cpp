@@ -4,23 +4,31 @@
 using namespace geode::prelude;
 using namespace allium;
 
-geode::Result<GameObject*> Rect::addAsGameObject(LevelEditorLayer* editorLayer, int colorID) const {
+geode::Result<GameObject*> Parallelogram::addAsGameObject(LevelEditorLayer* editorLayer, int colorID) const {
     static constexpr int SQUARE_OBJECT_ID = 211;
     static constexpr float SQUARE_OBJECT_SCALE = 30.f;
 
-    auto const center = (p1 + p3) / 2.0f;
-    auto const angle = std::atan2(p2.y - p1.y, p2.x - p1.x);
+    // Thank you flowvix!
+    auto const p1 = this->p1 / SQUARE_OBJECT_SCALE;
+    auto const p2 = this->p2 / SQUARE_OBJECT_SCALE;
+    auto const p3 = this->p4 / SQUARE_OBJECT_SCALE;
+    auto const pos = (p3 + p2) / 2.0;
+    auto const mat = Mat2(p2-p1, p3-p1) * Mat2::fromAngle(M_PI * -0.5);
+    Point const i = mat.data[0];
+    Point const j = mat.data[1];
+    auto const iAngle = i.angleTo({1.0, 0.0});
+    auto const jAngle = j.angleTo({0.0, 1.0});
+    auto const iLen = i.getLength();
+    auto const jLen = j.getLength();
 
-    auto scaleX = p1.getDistance(p2) / SQUARE_OBJECT_SCALE;
-    auto scaleY = p1.getDistance(p4) / SQUARE_OBJECT_SCALE;
+    if (iLen < 0.001f || jLen < 0.001f) return Err("Scale too small"); // Prevent scale reset
 
-    if (scaleX < 0.001f || scaleY < 0.001f) return Err("Scale too small"); // Prevent scale reset
+    auto object = editorLayer->createObject(SQUARE_OBJECT_ID, pos * 30.0, false);
 
-    auto object = editorLayer->createObject(SQUARE_OBJECT_ID, center, false);
-    object->setRotation(-angle * 180.0f / M_PI);
-
-    object->updateCustomScaleX(scaleX);
-    object->updateCustomScaleY(scaleY);
+    object->setRotationX(jAngle * 180.0f / M_PI);
+    object->setRotationY(iAngle * 180.0f / M_PI);
+    object->updateCustomScaleX(iLen);
+    object->updateCustomScaleY(jLen);
 
     if (object->m_baseColor) {
         object->m_baseColor->m_colorID = colorID;
@@ -35,7 +43,7 @@ geode::Result<GameObject*> Rect::addAsGameObject(LevelEditorLayer* editorLayer, 
     return Ok(object);
 }
 
-geode::Result<> Rect::drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const {
+geode::Result<> Parallelogram::drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const {
     node->drawPolygon(
         std::array<cocos2d::CCPoint, 4>{
             {p1, p2, p3, p4}
@@ -103,6 +111,8 @@ geode::Result<GameObject*> Triangle::addAsGameObject(LevelEditorLayer* editorLay
     auto const jAngle = j.angleTo({0.0, 1.0});
     auto const iLen = i.getLength();
     auto const jLen = j.getLength();
+
+    if (iLen < 0.001f || jLen < 0.001f) return Err("Scale too small"); // Prevent scale reset
 
     auto object = editorLayer->createObject(TRIANGLE_OBJECT_ID, pos * 30.0, false);
 

@@ -42,6 +42,6 @@ namespace allium {
         PolylineConverter(float lineWidth, std::vector<Point>&& points);
         ~PolylineConverter() override = default;
 
-        std::vector<std::unique_ptr<Object>> handleExtension() override;
+        std::vector<std::vector<std::unique_ptr<Object>>> handleExtension() override;
     };
 }

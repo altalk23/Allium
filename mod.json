@@ -6,7 +6,7 @@
 		"mac": "2.2074",
 		"ios": "2.2074"
 	},
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"id": "alk.allium",
 	"name": "Allium Drawing Tool",
 	"developer": "alk",
@@ -89,7 +89,7 @@
 		"text-detail-threshold": {
 			"type": "float",
 			"default": 0.3,
-			"min": 0.01,
+			"min": 0.1,
 			"name": "Text detail threshold",
 			"description": "(Temporary) Value in game units where a point is decimated if its distance to the segment is less than this value",
 			"max": 10.0

@@ -97,7 +97,7 @@ bool PolylineConverter::checkColinear(Point p1, Point p2, Point p3) {
 
 PolylineConverter::PolylineConverter(float lineWidth, std::vector<Point>&& points) : m_lineWidth(lineWidth), m_points(std::move(points)) {}
 
-std::vector<std::unique_ptr<Object>> PolylineConverter::handleExtension() {
+std::vector<std::vector<std::unique_ptr<Object>>> PolylineConverter::handleExtension() {
     std::vector<std::unique_ptr<Object>> objects;
     auto const size = m_points.size();
 
@@ -151,9 +151,10 @@ std::vector<std::unique_ptr<Object>> PolylineConverter::handleExtension() {
             std::cos(angle + M_PI / 2) * m_lineWidth / 2, 
             std::sin(angle + M_PI / 2) * m_lineWidth / 2
         };
-
-        objects.push_back(std::make_unique<Rect>(corner1, corner2, corner3, corner4));
+        objects.push_back(std::make_unique<Parallelogram>(corner1, corner2, corner3, corner4));
     }
 
-    return objects;
+    std::vector<std::vector<std::unique_ptr<Object>>> ret;
+    ret.push_back(std::move(objects));
+    return ret;
 }

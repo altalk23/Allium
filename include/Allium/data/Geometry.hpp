@@ -70,6 +70,14 @@ namespace allium {
         operator cocos2d::CCPoint() const {
             return cocos2d::CCPoint(static_cast<float>(x), static_cast<float>(y));
         }
+
+        std::strong_ordering operator<=>(Point const& other) const {
+            if (x < other.x) return std::strong_ordering::less;
+            if (x > other.x) return std::strong_ordering::greater;
+            if (y < other.y) return std::strong_ordering::less;
+            if (y > other.y) return std::strong_ordering::greater;
+            return std::strong_ordering::equal;
+        }
     };
 
     struct Col2 {
@@ -123,23 +131,22 @@ namespace allium {
     };
 
     struct Object {
-        size_t idx = 0;
         virtual ~Object() = default;
         virtual geode::Result<GameObject*> addAsGameObject(LevelEditorLayer* editorLayer, int colorID) const = 0;
         virtual geode::Result<> drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const = 0;
     };
 
-    struct Rect : Object {
+    struct Parallelogram : Object {
         Point p1;
         Point p2;
         Point p3;
         Point p4;
 
-        Rect() = default;
-        Rect(Point p1, Point p2, Point p3, Point p4)
+        Parallelogram() = default;
+        Parallelogram(Point p1, Point p2, Point p3, Point p4)
             : p1(p1), p2(p2), p3(p3), p4(p4)
         {};
-        virtual ~Rect() = default;
+        virtual ~Parallelogram() = default;
 
         geode::Result<GameObject*> addAsGameObject(LevelEditorLayer* editorLayer, int colorID) const override;
         geode::Result<> drawIntoDrawNode(DrawNodeExtension* node, cocos2d::ccColor3B color) const override;

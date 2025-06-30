@@ -12,10 +12,12 @@ namespace allium {
         double m_detail;
         bool m_handleHoles;
 
+        double getArea(Point const& p1, Point const& p2, Point const& p3);
+
     public:
         TriangulatorConverter(std::vector<Polygon>&& polygons, double detail, bool handleHoles = true);
         ~TriangulatorConverter() override = default;
 
-        std::vector<std::unique_ptr<Object>> handleExtension() override;
+        std::vector<std::vector<std::unique_ptr<Object>>> handleExtension() override;
     };
 }
