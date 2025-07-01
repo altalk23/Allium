@@ -19,6 +19,7 @@
 #define TTFDEBUG_PRINT(...) {}
 #else
 #include <fstream>
+// #define TTFDEBUG
 #ifdef TTFDEBUG
 #include <stdio.h>
 #define TTFDEBUG_PRINT(...) do {\
@@ -534,7 +535,13 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 	uint32_t end_of_glyf = 0;
 	if (head_table.indexToLocFormat == 0) {
 		uint32_t byte_offset = loca_table_entry->second.offsetPos;
-		for (uint16_t i = 0; i < max_profile.numGlyphs; i++, byte_offset += sizeof(uint16_t)) {
+		auto locaCount = max_profile.numGlyphs;
+		auto const locaSize = loca_table_entry->second.length / sizeof(uint16_t);
+		if (locaCount >= locaSize) {
+			TTFDEBUG_PRINT("loca table size is too small: %d glyphs, %d size", max_profile.numGlyphs, locaSize);
+			locaCount = locaSize - 1;
+		}
+		for (uint16_t i = 0; i < locaCount; i++, byte_offset += sizeof(uint16_t)) {
 			get2b(&glyph_index[i], data + byte_offset);
 			glyph_index[i] = glyph_index[i] << 1;
 		}
@@ -543,7 +550,13 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 	}
 	else {
 		uint32_t byte_offset = loca_table_entry->second.offsetPos;
-		for (uint16_t i = 0; i < max_profile.numGlyphs; i++, byte_offset += sizeof(uint32_t)) {
+		auto locaCount = max_profile.numGlyphs;
+		auto const locaSize = loca_table_entry->second.length / sizeof(uint32_t);
+		if (locaCount >= locaSize) {
+			TTFDEBUG_PRINT("loca table size is too small: %d glyphs, %d size", max_profile.numGlyphs, locaSize);
+			locaCount = locaSize - 1;
+		}
+		for (uint16_t i = 0; i < locaCount; i++, byte_offset += sizeof(uint32_t)) {
 			get4b(&glyph_index[i], data + byte_offset);
 		}
 		get4b(&end_of_glyf, data + byte_offset);
@@ -855,22 +868,9 @@ int8_t TTFFontParser::parse_data(const char* data, TTFFontParser::FontData* font
 				float_v2 prev_point;
 				const uint16_t& point_index_0 = point_index[j][0];
 				const Flags& flags_0 = flagsEnum[point_index_0];
-				//If the first point is off curve
-				if (flags_0.offCurve) {
-					const uint16_t& point_index_m1 = point_index[j][num_points_per_contour - 1];
-					const Flags& flags_m1 = flagsEnum[point_index_m1];
-					const int16_v2& p0 = points[point_index_0];
-					const int16_v2& pm1 = points[point_index_m1];
-					if (flags_m1.offCurve) {
-						prev_point.x = (p0.x + pm1.x) / 2.0f;
-						prev_point.y = (p0.y + pm1.y) / 2.0f;
-					}
-					else {
-						prev_point.x = pm1.x;
-						prev_point.y = pm1.y;
-					}
-				}
-				for (uint16_t k = 0; k < num_points_per_contour; k++) {
+				// if the first point is off curve, the last point will handle it anyway,
+				// so we can skip the first point
+				for (uint16_t k = flags_0.offCurve ? 1 : 0; k < num_points_per_contour; k++) {
 					const uint16_t& point_index0 = point_index[j][k % num_points_per_contour];
 					const uint16_t& point_index1 = point_index[j][(k + 1) % num_points_per_contour];
 					const Flags& flags0 = flagsEnum[point_index0];

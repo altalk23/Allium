@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.8
+ * Fix some fonts randomly switching winding order cause why not by reversing them if needed
+ * Fix the parser counting the first curve twice if its cut off at the middle
+ * Fix the parser not handling broken loca tables properly
+
 ## v1.0.7
  * Fix some fonts with multiple overlapping intersecting points by literally adding a random value to the points
  * Implement a parallelogram combination step thats pretty simple to shut up some people

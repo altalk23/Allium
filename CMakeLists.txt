@@ -8,7 +8,7 @@ else()
 endif()
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-project(Allium VERSION 1.0.7)
+project(Allium VERSION 1.0.8)
 
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp

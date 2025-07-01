@@ -19,7 +19,7 @@ double TriangulatorConverter::getArea(Point const& p1, Point const& p2, Point co
 std::vector<std::vector<std::unique_ptr<Object>>> TriangulatorConverter::handleExtension() {
     std::vector<std::vector<std::unique_ptr<Object>>> triangles;
 
-    for (auto const& polygon : m_polygons) {
+    for (auto& polygon : m_polygons) {
         triangles.emplace_back();
         using BoostPoint = boost::geometry::model::d2::point_xy<double>;
         using BoostPolygon = boost::geometry::model::polygon<BoostPoint>;
@@ -30,7 +30,7 @@ std::vector<std::vector<std::unique_ptr<Object>>> TriangulatorConverter::handleE
         BoostMultiPolygon multiPolygon;
         std::vector<std::pair<BoostRing, double>> rings;
 
-        for (auto const& contour : polygon) {
+        auto const calculateContours = [&](Contour const& contour, double& totalArea) {
             BoostRing ring;
             for (auto const& point : contour) {
                 static std::random_device rd;
@@ -53,6 +53,22 @@ std::vector<std::vector<std::unique_ptr<Object>>> TriangulatorConverter::handleE
                 boost::geometry::simplify(fixedRing, ring, m_detail);
                 // log::debug("Simplified ring has {} points", ring.size());
                 rings.emplace_back(std::move(ring), area);
+                totalArea += area;
+            }
+        };
+
+        double totalArea = 0.0;
+        for (auto const& contour : polygon) {
+            calculateContours(contour, totalArea);
+        }
+
+        if (totalArea < 0) { 
+            // its most likely a funny font that does not obey cw/ccw rule, lets just flip it
+            rings.clear();
+            totalArea = 0.0;
+            for (auto& contour : polygon) {
+                std::reverse(contour.begin(), contour.end());
+                calculateContours(contour, totalArea);
             }
         }
 
