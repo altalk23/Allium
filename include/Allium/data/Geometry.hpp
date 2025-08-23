@@ -35,6 +35,10 @@ namespace allium {
             return Point{x / scalar, y / scalar};
         }
 
+        Point& operator+=(Point const& other) {
+            x += other.x; y += other.y; return *this;
+        }
+
         double dot(Point const& other) const {
             return x * other.x + y * other.y;
         }
@@ -57,6 +61,12 @@ namespace allium {
             );
 
             return angle * ((this->perpDot(other) < 0) ? -1 : 1);
+        }
+
+        Point normalize() {
+            float len = getLength();
+            if (len < 1e-6f) return {0.f, 0.f};
+            return { x / len, y / len };
         }
 
         double getLengthSq() const {

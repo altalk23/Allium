@@ -1,5 +1,5 @@
 {
-	"geode": "4.6.1",
+	"geode": "4.7.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -21,10 +21,10 @@
 			"version": ">=1.0.0"
 		},
 		"geode.custom-keybinds": {
-            "version": ">=1.7.1",
-            "importance": "required",
+			"version": ">=1.7.1",
+			"importance": "required",
 			"platforms": ["win"]
-        },
+		},
 		"alk.ime-input": {
 			"version": ">=1.0.0",
 			"importance": "required"
@@ -101,6 +101,14 @@
 			"name": "Text size",
 			"description": "(Temporary) The size of the text",
 			"max": 576.0
+		},
+		"triangle-padding": {
+			"type": "float",
+			"default": 0,
+			"min": 0,
+			"name": "Triangle Padding",
+			"description": "(Temporary) The percent of padding added to the triangle's size when drawing polygons and text. (Corners will be jagged, recommended if you have gaps showing up, between 1% and 2% works best)",
+			"max": 5
 		}
 	}
 }
