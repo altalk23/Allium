@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.0.9
+ * Add a seeting to increase padding on triangles for the Polygon and Font importer tools to help with slight gaps being visible
+
 ## v1.0.8
  * Fix some fonts randomly switching winding order cause why not by reversing them if needed
  * Fix the parser counting the first curve twice if its cut off at the middle

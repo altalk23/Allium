@@ -100,9 +100,26 @@ geode::Result<GameObject*> Triangle::addAsGameObject(LevelEditorLayer* editorLay
     static constexpr float TRIANGLE_OBJECT_SCALE = 30.f;
 
     // Thank you flowvix!
-    auto const p1 = this->p1 / TRIANGLE_OBJECT_SCALE;
-    auto const p2 = this->p2 / TRIANGLE_OBJECT_SCALE;
-    auto const p3 = this->p3 / TRIANGLE_OBJECT_SCALE;
+    auto p1 = this->p1 / TRIANGLE_OBJECT_SCALE;
+    auto p2 = this->p2 / TRIANGLE_OBJECT_SCALE;
+    auto p3 = this->p3 / TRIANGLE_OBJECT_SCALE;
+
+    float paddingPercent = Mod::get()->getSettingValue<float>("triangle-padding");
+
+    if (paddingPercent != 0) {
+        auto const e1 = p2 - p1;
+        auto const e2 = p3 - p2;
+        auto const e3 = p1 - p3;
+
+        float averageLength = (e1.getLength() + e2.getLength() + e3.getLength()) / 3.0f;
+        float padding = averageLength * (paddingPercent / 100.f);
+        auto centroid = (p1 + p2 + p3) / 3.0;
+
+        p1 += (p1 - centroid).normalize() * padding;
+        p2 += (p2 - centroid).normalize() * padding;
+        p3 += (p3 - centroid).normalize() * padding;
+    }
+
     auto const pos = (p3 + p2) / 2.0;
     auto const mat = Mat2(p2-p1, p3-p1) * Mat2::fromAngle(M_PI * -0.5);
     Point const i = mat.data[0];
