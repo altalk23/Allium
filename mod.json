@@ -1,12 +1,12 @@
 {
-	"geode": "4.7.0",
+	"geode": "4.9.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
 		"mac": "2.2074",
 		"ios": "2.2074"
 	},
-	"version": "1.0.9",
+	"version": "1.0.10",
 	"id": "alk.allium",
 	"name": "Allium Drawing Tool",
 	"developer": "alk",
