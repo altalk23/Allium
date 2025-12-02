@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.0.10
+ * Mod rotation values by 360 and make it positive to fix a bug where saving a negative decimal rotation offsets by 0.01 every time you close and reopen
+
 ## v1.0.9
  * Add a setting to increase padding on triangles for the Polygon and Font importer tools to help with slight gaps being visible
 
