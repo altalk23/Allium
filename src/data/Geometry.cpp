@@ -25,8 +25,8 @@ geode::Result<GameObject*> Parallelogram::addAsGameObject(LevelEditorLayer* edit
 
     auto object = editorLayer->createObject(SQUARE_OBJECT_ID, pos * 30.0, false);
 
-    object->setRotationX(jAngle * 180.0f / M_PI);
-    object->setRotationY(iAngle * 180.0f / M_PI);
+    object->setRotationX(std::fmod(jAngle * 180.0f / M_PI + 360.f, 360.f));
+    object->setRotationY(std::fmod(iAngle * 180.0f / M_PI + 360.f, 360.f));
     object->updateCustomScaleX(iLen);
     object->updateCustomScaleY(jLen);
 
@@ -133,8 +133,8 @@ geode::Result<GameObject*> Triangle::addAsGameObject(LevelEditorLayer* editorLay
 
     auto object = editorLayer->createObject(TRIANGLE_OBJECT_ID, pos * 30.0, false);
 
-    object->setRotationX(jAngle * 180.0f / M_PI);
-    object->setRotationY(iAngle * 180.0f / M_PI);
+    object->setRotationX(std::fmod(jAngle * 180.0f / M_PI + 360.f, 360.f));
+    object->setRotationY(std::fmod(iAngle * 180.0f / M_PI + 360.f, 360.f));
     object->updateCustomScaleX(iLen);
     object->updateCustomScaleY(jLen);
 
