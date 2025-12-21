@@ -32,6 +32,9 @@ void BrushDrawer::updateOverlay() {
 void BrushDrawer::clearOverlay() {
     m_overlay->clear();
 }
+bool BrushDrawer::isOverlayVisible() const {
+    return m_overlay->m_nBufferCount > 0;
+}
 
 void BrushDrawer::updateLine() {
     m_canUpdateLine = false;

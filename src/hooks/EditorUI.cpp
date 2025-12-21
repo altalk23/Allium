@@ -110,6 +110,16 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         }
         return EditorUI::ccTouchEnded(touch, event);
     }
+
+    $override
+    void updateZoom(float zoom) {
+        EditorUI::updateZoom(zoom);
+        if (auto drawer = m_fields->m_buttonBar->getBrushDrawer()) {
+            if (drawer->isOverlayVisible()) {
+                drawer->updateOverlay();
+            }
+        }
+    }
 };
 
 #ifdef GEODE_IS_WINDOWS

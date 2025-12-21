@@ -59,13 +59,15 @@ std::unique_ptr<BaseConverter> PolygonBrushDrawer::initializeConverter() {
 
 void PolygonBrushDrawer::updateOverlay() {
     this->clearOverlay();
-    
+    auto const zoom = 1.f / LevelEditorLayer::get()->m_objectLayer->getScale();
+    auto const dotRadius = 4.5f * zoom;
+    auto const lineRadius = 0.75f * zoom;
     if (m_points.size() >= 3) BrushDrawer::updateOverlay();
     if (m_points.size() > 0) {
         auto lastPoint = m_points.back();
         for (auto point : m_points) {
-            m_overlay->drawSegment(lastPoint, point, .5f, ccc4FFromccc3B(ccc3(255, 255, 191)));
-            m_overlay->drawDot(lastPoint, 3.f, ccc4FFromccc3B(ccc3(255, 127, 127)));
+            m_overlay->drawSegment(lastPoint, point, lineRadius, ccc4FFromccc3B(ccc3(255, 255, 191)));
+            m_overlay->drawDot(lastPoint, dotRadius, ccc4FFromccc3B(ccc3(255, 127, 127)));
             lastPoint = point;
         }
     }

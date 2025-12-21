@@ -82,16 +82,19 @@ std::unique_ptr<BaseConverter> CurveBrushDrawer::initializeConverter() {
 void CurveBrushDrawer::updateOverlay() {
     this->clearOverlay();
     auto const point1Mirror = m_points[0] + (m_points[0] - m_points[1]);
-    m_overlay->drawSegment(point1Mirror, m_points[1], .5f, ccc4FFromccc3B(ccc3(255, 255, 191)));
-    m_overlay->drawDot(m_points[1], 3.f, ccc4FFromccc3B(ccc3(255, 127, 127)));
-    m_overlay->drawDot(point1Mirror, 3.f, ccc4FFromccc3B(ccc3(127, 255, 127)));
-    m_overlay->drawDot(m_points[0], 3.f, ccc4FFromccc3B(ccc3(127, 127, 255)));
+    auto const zoom = 1.f / LevelEditorLayer::get()->m_objectLayer->getScale();
+    auto const dotRadius = 4.5f * zoom;
+    auto const lineRadius = 0.75f * zoom;
+    m_overlay->drawSegment(point1Mirror, m_points[1], lineRadius, ccc4FFromccc3B(ccc3(255, 255, 191)));
+    m_overlay->drawDot(m_points[1], dotRadius, ccc4FFromccc3B(ccc3(255, 127, 127)));
+    m_overlay->drawDot(point1Mirror, dotRadius, ccc4FFromccc3B(ccc3(127, 255, 127)));
+    m_overlay->drawDot(m_points[0], dotRadius, ccc4FFromccc3B(ccc3(127, 127, 255)));
     if (m_points.size() == 4) {
         auto const point2Mirror = m_points[3] + (m_points[3] - m_points[2]);
-        m_overlay->drawSegment(point2Mirror, m_points[2], .5f, ccc4FFromccc3B(ccc3(255, 255, 191)));
-        m_overlay->drawDot(m_points[2], 3.f, ccc4FFromccc3B(ccc3(255, 127, 127)));
-        m_overlay->drawDot(point2Mirror, 3.f, ccc4FFromccc3B(ccc3(127, 255, 127)));
-        m_overlay->drawDot(m_points[3], 3.f, ccc4FFromccc3B(ccc3(127, 127, 255)));
+        m_overlay->drawSegment(point2Mirror, m_points[2], lineRadius, ccc4FFromccc3B(ccc3(255, 255, 191)));
+        m_overlay->drawDot(m_points[2], dotRadius, ccc4FFromccc3B(ccc3(255, 127, 127)));
+        m_overlay->drawDot(point2Mirror, dotRadius, ccc4FFromccc3B(ccc3(127, 255, 127)));
+        m_overlay->drawDot(m_points[3], dotRadius, ccc4FFromccc3B(ccc3(127, 127, 255)));
        
         BrushDrawer::updateOverlay();
     }   
