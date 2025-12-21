@@ -82,9 +82,9 @@ std::unique_ptr<BaseConverter> CurveBrushDrawer::initializeConverter() {
 void CurveBrushDrawer::updateOverlay() {
     this->clearOverlay();
     auto const point1Mirror = m_points[0] + (m_points[0] - m_points[1]);
-    auto const zoom = 1.f / LevelEditorLayer::get()->m_objectLayer->getScale();
-    auto const dotRadius = 4.5f * zoom;
-    auto const lineRadius = 0.75f * zoom;
+    auto const scale = this->getOverlayScale();
+    auto const dotRadius = 4.5f * scale;
+    auto const lineRadius = 0.75f * scale;
     m_overlay->drawSegment(point1Mirror, m_points[1], lineRadius, ccc4FFromccc3B(ccc3(255, 255, 191)));
     m_overlay->drawDot(m_points[1], dotRadius, ccc4FFromccc3B(ccc3(255, 127, 127)));
     m_overlay->drawDot(point1Mirror, dotRadius, ccc4FFromccc3B(ccc3(127, 255, 127)));

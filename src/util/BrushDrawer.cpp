@@ -32,8 +32,17 @@ void BrushDrawer::updateOverlay() {
 void BrushDrawer::clearOverlay() {
     m_overlay->clear();
 }
-bool BrushDrawer::isOverlayVisible() const {
+bool BrushDrawer::isOverlayVisible() {
     return m_overlay->m_nBufferCount > 0;
+}
+float BrushDrawer::getOverlayScale() {
+    auto const scale = Mod::get()->getSettingValue<double>("overlay-scale");
+
+    if (Mod::get()->getSettingValue<bool>("scale-overlay-with-zoom")) {
+        return scale / LevelEditorLayer::get()->m_objectLayer->getScale();
+    } else {
+        return scale;
+    }
 }
 
 void BrushDrawer::updateLine() {

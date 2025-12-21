@@ -49,6 +49,10 @@
 		]
 	},
 	"settings": {
+		"brushes-header": {
+			"type": "title",
+			"name": "Brushes"
+		},
 		"brush-line-width": {
 			"type": "float",
 			"default": 5,
@@ -109,6 +113,24 @@
 			"name": "Triangle Padding",
 			"description": "(Temporary) The percent of padding added to the triangle's size when drawing polygons and text. (Corners will be jagged, recommended if you have gaps showing up, between 1% and 2% works best)",
 			"max": 5
+		},
+		"ui-header": {
+			"type": "title",
+			"name": "UI"
+		},
+		"overlay-scale": {
+			"type": "float",
+			"default": 1.0,
+			"min": 0.2,
+			"name": "Overlay Scale",
+			"description": "The size of the brush overlay",
+			"max": 4.0
+		},
+		"scale-overlay-with-zoom": {
+			"type": "bool",
+			"default": true,
+			"name": "Scale Overlay with Zoom",
+			"description": "Whether the brush overlay should stay the same size regardless of zoom level"
 		}
 	}
 }

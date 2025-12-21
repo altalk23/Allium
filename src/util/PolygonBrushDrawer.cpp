@@ -59,9 +59,9 @@ std::unique_ptr<BaseConverter> PolygonBrushDrawer::initializeConverter() {
 
 void PolygonBrushDrawer::updateOverlay() {
     this->clearOverlay();
-    auto const zoom = 1.f / LevelEditorLayer::get()->m_objectLayer->getScale();
-    auto const dotRadius = 4.5f * zoom;
-    auto const lineRadius = 0.75f * zoom;
+    auto const scale = this->getOverlayScale();
+    auto const dotRadius = 4.5f * scale;
+    auto const lineRadius = 0.75f * scale;
     if (m_points.size() >= 3) BrushDrawer::updateOverlay();
     if (m_points.size() > 0) {
         auto lastPoint = m_points.back();

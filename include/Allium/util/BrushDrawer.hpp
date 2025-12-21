@@ -19,7 +19,8 @@ namespace allium {
 
         virtual void updateOverlay();
         void clearOverlay();
-        bool isOverlayVisible() const;
+        bool isOverlayVisible();
+        float getOverlayScale();
 
         virtual void updateLine();
 
