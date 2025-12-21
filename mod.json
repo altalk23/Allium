@@ -114,9 +114,9 @@
 			"description": "(Temporary) The percent of padding added to the triangle's size when drawing polygons and text. (Corners will be jagged, recommended if you have gaps showing up, between 1% and 2% works best)",
 			"max": 5
 		},
-		"ui-header": {
+		"interface-header": {
 			"type": "title",
-			"name": "UI"
+			"name": "Interface"
 		},
 		"overlay-scale": {
 			"type": "float",
