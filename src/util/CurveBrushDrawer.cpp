@@ -74,6 +74,11 @@ std::unique_ptr<BaseConverter> CurveBrushDrawer::initializeConverter() {
     std::vector<Point> points;
     points.insert(points.end(), m_previousPoints.begin(), m_previousPoints.end());
     points.insert(points.end(), m_currentPoints.begin(), m_currentPoints.end());
+    // remove consecutive duplicate points
+    auto newEnd = std::unique(points.begin(), points.end(), [](const Point& a, const Point& b) {
+        return a == b;
+    });
+    points.erase(newEnd, points.end());
     return std::make_unique<PolylineConverter>(
         BrushManager::get()->getLineWidth(), std::move(points)
     );
