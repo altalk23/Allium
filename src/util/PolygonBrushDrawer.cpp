@@ -27,6 +27,7 @@ bool PolygonBrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
     if (CCKeyboardDispatcher::get()->getAltKeyPressed()) point2 = BaseConverter::gridAlign(point2, 30.f);
     m_points.emplace_back(point2);
     if (m_points.size() >= 3) m_canUpdateLine = true;
+    this->updateOverlay();
     return true;
 }
 void PolygonBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {
@@ -59,13 +60,15 @@ std::unique_ptr<BaseConverter> PolygonBrushDrawer::initializeConverter() {
 
 void PolygonBrushDrawer::updateOverlay() {
     this->clearOverlay();
-    
+    auto const scale = this->getOverlayScale();
+    auto const dotRadius = 4.5f * scale;
+    auto const lineRadius = 0.75f * scale;
     if (m_points.size() >= 3) BrushDrawer::updateOverlay();
     if (m_points.size() > 0) {
         auto lastPoint = m_points.back();
         for (auto point : m_points) {
-            m_overlay->drawSegment(lastPoint, point, .5f, ccc4FFromccc3B(ccc3(255, 255, 191)));
-            m_overlay->drawDot(lastPoint, 3.f, ccc4FFromccc3B(ccc3(255, 127, 127)));
+            m_overlay->drawSegment(lastPoint, point, lineRadius, ccc4FFromccc3B(ccc3(255, 255, 191)));
+            m_overlay->drawDot(lastPoint, dotRadius, ccc4FFromccc3B(ccc3(255, 127, 127)));
             lastPoint = point;
         }
     }

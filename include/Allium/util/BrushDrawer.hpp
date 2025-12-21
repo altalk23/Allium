@@ -19,6 +19,10 @@ namespace allium {
 
         virtual void updateOverlay();
         void clearOverlay();
+        bool isOverlayVisible();
+        float getOverlayScale();
+
+        virtual bool usesDeadzone() { return false; }
 
         virtual void updateLine();
 
