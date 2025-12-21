@@ -31,6 +31,10 @@ bool CurveBrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
     }
     m_points.emplace_back(point);
     m_points.emplace_back(point);
+    if (m_points.size() == 4) {
+        m_currentPoints = this->getGeneratedPoints();
+    }
+    this->updateOverlay();
     return true;
 }
 void CurveBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {

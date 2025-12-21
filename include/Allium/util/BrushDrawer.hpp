@@ -22,6 +22,8 @@ namespace allium {
         bool isOverlayVisible();
         float getOverlayScale();
 
+        virtual bool usesDeadzone() { return false; }
+
         virtual void updateLine();
 
         virtual std::unique_ptr<BaseConverter> initializeConverter() = 0;

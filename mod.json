@@ -130,7 +130,20 @@
 			"type": "bool",
 			"default": true,
 			"name": "Scale Overlay with Zoom",
-			"description": "Whether the brush overlay should stay the same size regardless of zoom level"
+			"description": "Whether the brush overlay should stay the same size regardless of the editor zoom level"
+		},
+		"deadzone-radius": {
+			"type": "float",
+			"default": {
+				"win": 5.0,
+				"mac": 5.0,
+				"android": 10.0,
+				"ios": 10.0
+			},
+			"min": 0.0,
+			"name": "Deadzone Radius",
+			"description": "The radius of the deadzone for the curve and polygon brushes, e.g. how far you have to move your finger/mouse before it starts dragging.\nSet to 0 to disable",
+			"max": 25.0
 		}
 	}
 }

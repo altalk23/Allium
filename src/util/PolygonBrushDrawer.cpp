@@ -27,6 +27,7 @@ bool PolygonBrushDrawer::handleTouchStart(cocos2d::CCPoint const& point) {
     if (CCKeyboardDispatcher::get()->getAltKeyPressed()) point2 = BaseConverter::gridAlign(point2, 30.f);
     m_points.emplace_back(point2);
     if (m_points.size() >= 3) m_canUpdateLine = true;
+    this->updateOverlay();
     return true;
 }
 void PolygonBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {
