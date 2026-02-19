@@ -32,11 +32,11 @@ geode::Result<GameObject*> Parallelogram::addAsGameObject(LevelEditorLayer* edit
 
     if (object->m_baseColor) {
         object->m_baseColor->m_colorID = colorID;
-        object->m_updateParents = true;
+        object->m_shouldUpdateColorSprite = true;
     }
     if (object->m_detailColor) {
         object->m_detailColor->m_colorID = colorID;
-        object->m_updateParents = true;
+        object->m_shouldUpdateColorSprite = true;
     }
 
     editorLayer->m_undoObjects->removeLastObject();
@@ -68,11 +68,11 @@ geode::Result<GameObject*> Circle::addAsGameObject(LevelEditorLayer* editorLayer
 
     if (object->m_baseColor) {
         object->m_baseColor->m_colorID = colorID;
-        object->m_updateParents = true;
+        object->m_shouldUpdateColorSprite = true;
     }
     if (object->m_detailColor) {
         object->m_detailColor->m_colorID = colorID;
-        object->m_updateParents = true;
+        object->m_shouldUpdateColorSprite = true;
     }
 
     editorLayer->m_undoObjects->removeLastObject();
@@ -140,11 +140,11 @@ geode::Result<GameObject*> Triangle::addAsGameObject(LevelEditorLayer* editorLay
 
     if (object->m_baseColor) {
         object->m_baseColor->m_colorID = colorID;
-        object->m_updateParents = true;
+        object->m_shouldUpdateColorSprite = true;
     }
     if (object->m_detailColor) {
         object->m_detailColor->m_colorID = colorID;
-        object->m_updateParents = true;
+        object->m_shouldUpdateColorSprite = true;
     }
 
     editorLayer->m_undoObjects->removeLastObject();
