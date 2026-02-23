@@ -9,7 +9,7 @@ namespace allium {
     class AlliumButtonBar : public cocos2d::CCNode {
     protected:
         geode::Ref<EditButtonBar> m_buttonBar;
-        cocos2d::CCArray* m_buttons = nullptr;
+        std::vector<geode::Ref<cocos2d::CCNode>> m_buttons;
 
         MenuItemTogglerExtra* m_lineToggle = nullptr;
         MenuItemTogglerExtra* m_curveToggle = nullptr;

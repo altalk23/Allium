@@ -2,14 +2,16 @@
 #include <manager/BrushManager.hpp>
 #include <ui/AlliumButtonBar.hpp>
 #include <util/BrushDrawer.hpp>
-#include <alphalaneous.editortab_api/include/EditorTabs.hpp>
-
-#ifdef GEODE_IS_WINDOWS
-#include <geode.custom-keybinds/include/Keybinds.hpp>
-#endif
+#include <alphalaneous.editortab_api/include/EditorTabAPI.hpp>
 
 using namespace geode::prelude;
 using namespace allium;
+
+$on_mod(Loaded) {
+    listenForKeybindSettingPresses("pan-editor-in-brush", [](Keybind const& keybind, bool down, bool repeat, double timestamp) {
+        BrushManager::get()->m_tempPanEditorInBrush = down;
+    });
+}
 
 #include <Geode/modify/EditorUI.hpp>
 
@@ -34,40 +36,29 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
             Mod::get()->setSavedValue("allium-build-tab-announcement-shown", true);
         }
 
-        m_fields->m_buttonBar = AlliumButtonBar::create(this);
-
-        EditorTabs::addTab(this, TabType::BUILD, "allium"_spr, [this](EditorUI* ui, CCMenuItemToggler* toggler) -> CCNode* { 
-            auto sprite = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
-            sprite->setScale(0.2f);
-            EditorTabUtils::setTabIcon(toggler, sprite);
-
-            return m_fields->m_buttonBar->getButtonBar();
-        }, [this](EditorUI*, bool state, CCNode*) {
-            if (!state) {
-                if (!m_fields->m_deselected) m_fields->m_buttonBar->resetToggles(nullptr);
-                m_fields->m_deselected = true;
+        alpha::editor_tabs::addTab("allium"_spr, alpha::editor_tabs::BUILD, 
+            [this] { // Create the tab
+                m_fields->m_buttonBar = AlliumButtonBar::create(this);
+                return m_fields->m_buttonBar->getButtonBar();
+            }, 
+            [] { // create the tab icon
+                auto sprite = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
+                sprite->setScale(0.2f);
+                return sprite;
+            }, 
+            [this] (bool state, auto tab) { // do something when the tab is entered and exited
+                if (!state) {
+                    if (!m_fields->m_deselected) m_fields->m_buttonBar->resetToggles(nullptr);
+                    m_fields->m_deselected = true;
+                }
+                else {
+                    m_fields->m_deselected = false;
+                }
+            }, 
+            [] (int rows, int cols, auto tab) { // do something when the tab is reloaded
+                
             }
-            else {
-                m_fields->m_deselected = false;
-            }
-        });
-
-
-    #ifdef GEODE_IS_WINDOWS
-        // Adds the keybind listener for panning in brush mode
-        using namespace keybinds;
-
-        this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-            if (event->isDown()) {
-                BrushManager::get()->m_tempPanEditorInBrush = true;
-            }
-            else {
-                BrushManager::get()->m_tempPanEditorInBrush = false;
-            }
-            return ListenerResult::Propagate;
-        }, "pan-editor-in-brush"_spr);
-    
-    #endif
+        );
 
         return true;
     }
@@ -111,25 +102,3 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         return EditorUI::ccTouchEnded(touch, event);
     }
 };
-
-#ifdef GEODE_IS_WINDOWS
-
-Result<> addKeybinds() {
-    using namespace keybinds;
-
-    BindManager::get()->registerBindable({
-        "pan-editor-in-brush"_spr,
-        "Pan Editor In Brush Mode",
-        "Allows you to pan in the editor when you have brush enabled.",
-        { Keybind::create(KEY_Space) },
-        "Allium/Brushes"
-    });
-
-    return Ok();
-}
-
-$execute {
-    (void)addKeybinds();
-}
-
-#endif

@@ -10,6 +10,7 @@
 #include <ui/SupportPopup.hpp>
 #include <Geode/loader/Dispatch.hpp>
 #include <Geode/loader/Event.hpp>
+#include <alphalaneous.editortab_api/include/EditorTabAPI.hpp>
 
 using namespace allium;
 using namespace geode::prelude;
@@ -36,7 +37,6 @@ AlliumButtonBar* AlliumButtonBar::create(EditorUI* editorUI) {
 bool AlliumButtonBar::init(EditorUI* editorUI) {
     if (!CCNode::init()) return false;
 
-    m_buttons = CCArray::create();
     auto winSize = CCDirector::get()->getWinSize();
     auto winBottom = CCDirector::get()->getScreenBottom();
     auto offset = ccp(winSize.width / 2 - 5.f, winBottom + editorUI->m_toolbarHeight - 6.f);
@@ -150,7 +150,7 @@ bool AlliumButtonBar::init(EditorUI* editorUI) {
         }
     );
 
-    m_buttonBar = EditButtonBar::create(m_buttons, offset, 0, false, cols, rows);
+    m_buttonBar = alpha::editor_tabs::createEditButtonBar(m_buttons);
     m_buttonBar->setID("allium-tab-bar"_spr);
 
     return true;
@@ -201,7 +201,7 @@ CCMenuItemSpriteExtra* AlliumButtonBar::addButton(
         }
     );
     button->setID(id.data());
-    m_buttons->addObject(button);
+    m_buttons.push_back(button);
     return button;
 }
 
@@ -230,6 +230,6 @@ MenuItemTogglerExtra* AlliumButtonBar::addToggle(
         callback
     );
     button->setID(id.data());
-    m_buttons->addObject(button);
+    m_buttons.push_back(button);
     return button;
 }
