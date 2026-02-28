@@ -51,9 +51,7 @@ void CurveBrushDrawer::handleTouchMove(cocos2d::CCPoint const& point) {
 void CurveBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
     CurveBrushDrawer::handleTouchMove(point);
     this->updateOverlay();
-    if (m_currentPoints.size() > 1) {
-        m_previousPoints.insert(m_previousPoints.end(), m_currentPoints.begin(), m_currentPoints.end() - 1);
-    }
+    m_previousPoints.insert(m_previousPoints.end(), m_currentPoints.begin(), m_currentPoints.end());
     m_currentPoints.clear();
 }
 
@@ -76,6 +74,7 @@ std::vector<Point> CurveBrushDrawer::getGeneratedPoints() {
 
 std::unique_ptr<BaseConverter> CurveBrushDrawer::initializeConverter() {
     std::vector<Point> points;
+    
     points.insert(points.end(), m_previousPoints.begin(), m_previousPoints.end());
     points.insert(points.end(), m_currentPoints.begin(), m_currentPoints.end());
     // remove consecutive duplicate points
@@ -83,6 +82,7 @@ std::unique_ptr<BaseConverter> CurveBrushDrawer::initializeConverter() {
         return a == b;
     });
     points.erase(newEnd, points.end());
+
     return std::make_unique<PolylineConverter>(
         BrushManager::get()->getLineWidth(), std::move(points)
     );
