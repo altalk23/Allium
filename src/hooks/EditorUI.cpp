@@ -19,6 +19,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
     struct Fields {
         geode::Ref<AlliumButtonBar> m_buttonBar;
         bool m_deselected = false;
+        bool m_outsideDeadzone = false;
     };
 
     $override
@@ -65,7 +66,9 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
 
     CCPoint getLayerPosition(CCTouch* touch) {
         auto objectLayer = LevelEditorLayer::get()->m_objectLayer;
-        auto glPoint = CCDirector::get()->convertToGL(touch->getLocationInView());
+        auto glPoint = CCDirector::get()->convertToGL(
+            m_fields->m_outsideDeadzone ? touch->getLocationInView() : touch->getStartLocationInView()
+        );
 		return objectLayer->convertToNodeSpace(this->convertToWorldSpace(glPoint));
 	}
 
@@ -73,6 +76,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
     bool ccTouchBegan(CCTouch* touch, CCEvent* event) {
         if (!BrushManager::get()->panEditorInBrush() && m_fields->m_buttonBar->getBrushDrawer()) {
             auto layerPosition = this->getLayerPosition(touch);
+            m_fields->m_outsideDeadzone = !m_fields->m_buttonBar->getBrushDrawer()->usesDeadzone();
             m_fields->m_buttonBar->getBrushDrawer()->handleTouchStart(layerPosition);
 
             return true;
@@ -83,8 +87,14 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
     $override
     void ccTouchMoved(CCTouch* touch, CCEvent* event) {
         if (!BrushManager::get()->panEditorInBrush() && m_fields->m_buttonBar->getBrushDrawer()) {
-            auto layerPosition = this->getLayerPosition(touch);
-            m_fields->m_buttonBar->getBrushDrawer()->handleTouchMove(layerPosition);
+            if (!m_fields->m_outsideDeadzone) {
+                auto deadzone = Mod::get()->getSettingValue<double>("deadzone-radius");
+                m_fields->m_outsideDeadzone = ccpDistance(touch->getStartLocation(), touch->getLocation()) > deadzone;
+            }
+            if (m_fields->m_outsideDeadzone) {
+                auto layerPosition = this->getLayerPosition(touch);
+                m_fields->m_buttonBar->getBrushDrawer()->handleTouchMove(layerPosition);
+            }
 
             return;
         }
@@ -100,5 +110,15 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
             return;
         }
         return EditorUI::ccTouchEnded(touch, event);
+    }
+  
+  $override
+    void updateZoom(float zoom) {
+        EditorUI::updateZoom(zoom);
+        if (auto drawer = m_fields->m_buttonBar->getBrushDrawer()) {
+            if (drawer->isOverlayVisible()) {
+                drawer->updateOverlay();
+            }
+        }
     }
 };

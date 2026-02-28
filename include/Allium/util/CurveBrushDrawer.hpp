@@ -28,6 +28,8 @@ namespace allium {
 
         void updateOverlay() override;
 
+        bool usesDeadzone() override { return true; }
+
         void updateLine() override;
 
         std::unique_ptr<BaseConverter> initializeConverter() override;
