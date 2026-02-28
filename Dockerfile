@@ -12,6 +12,9 @@ ARG CPM_CACHE_DIR
 ARG BINDINGS
 ARG SDK_VERSION
 
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
 RUN geode sdk update ${SDK_VERSION} \
     && geode sdk install-binaries -p android32 \
     && git clone https://github.com/${BINDINGS} --depth=1 /workspace/bindings
@@ -42,6 +45,9 @@ ARG MOD_ID
 ARG CPM_CACHE_DIR
 ARG BINDINGS
 ARG SDK_VERSION
+
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 RUN geode sdk update ${SDK_VERSION} \
     && geode sdk install-binaries -p android64 \
@@ -74,6 +80,9 @@ ARG CPM_CACHE_DIR
 ARG BINDINGS
 ARG SDK_VERSION
 
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
 RUN geode sdk update ${SDK_VERSION} \
     && geode sdk install-binaries -p ios \
     && git clone https://github.com/${BINDINGS} --depth=1 /workspace/bindings
@@ -102,6 +111,9 @@ ARG CPM_CACHE_DIR
 ARG BINDINGS
 ARG SDK_VERSION
 
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
 RUN geode sdk update ${SDK_VERSION} \
     && geode sdk install-binaries -p macos \
     && git clone https://github.com/${BINDINGS} --depth=1 /workspace/bindings
@@ -129,6 +141,9 @@ ARG MOD_ID
 ARG CPM_CACHE_DIR
 ARG BINDINGS
 ARG SDK_VERSION
+
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 RUN geode sdk update ${SDK_VERSION} \
     && geode sdk install-binaries -p windows \

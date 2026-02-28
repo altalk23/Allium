@@ -56,7 +56,7 @@ CPMAddPackage(
 CPMAddPackage(
     NAME Boost
     VERSION 1.88.0 # Versions less than 1.85.0 may need patches for installation targets.
-    URL https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.7z
+    URL https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.tar.gz
     OPTIONS "BOOST_ENABLE_CMAKE ON" "BOOST_SKIP_INSTALL_RULES ON" # Set `OFF` for installation
             "BUILD_SHARED_LIBS OFF" "BOOST_INCLUDE_LIBRARIES geometry" # Note the escapes!
 )
