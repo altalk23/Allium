@@ -1,10 +1,10 @@
 {
-	"geode": "4.9.0",
+	"geode": "5.2.0",
 	"gd": {
-		"win": "2.2074",
-		"android": "2.2074",
-		"mac": "2.2074",
-		"ios": "2.2074"
+		"win": "2.2081",
+		"android": "2.2081",
+		"mac": "2.2081",
+		"ios": "2.2081"
 	},
 	"version": "1.0.10",
 	"id": "alk.allium",
@@ -13,21 +13,16 @@
 	"description": "The drawing tool for Geometry Dash",
 	"dependencies": {
 		"geode.node-ids": {
-			"importance": "required",
+			"required": true,
 			"version": ">=1.11.0"
 		},
 		"alphalaneous.editortab_api": {
-			"importance": "required",
-			"version": ">=1.0.0"
-		},
-		"geode.custom-keybinds": {
-			"version": ">=1.7.1",
-			"importance": "required",
-			"platforms": ["win"]
+			"required": true,
+			"version": ">=2.0.0"
 		},
 		"alk.ime-input": {
 			"version": ">=1.0.0",
-			"importance": "required"
+			"required": true
 		}
 	},
 	"links": {
@@ -52,6 +47,15 @@
 		"brushes-header": {
 			"type": "title",
 			"name": "Brushes"
+    },
+		"pan-editor-in-brush": {
+			"type": "keybind",
+			"name": "Pan Editor in Brush",
+			"default": ["Space"],
+			"category": "editor",
+			"description": "Allows you to pan in the editor when you have brush enabled.",
+			"priority": 1,
+			"migrate-from": "alk.allium/pan-editor-in-brush"
 		},
 		"brush-line-width": {
 			"type": "float",
@@ -85,6 +89,10 @@
 			"description": "(Temporary) Value in game units where a point is decimated if its distance to the segment is less than this value",
 			"max": 1.5
 		},
+    "text-header": {
+			"type": "title",
+			"name": "Text"
+    },
 		"font-path": {
 			"type": "file",
 			"description": "(Temporary) The path to the font file",
