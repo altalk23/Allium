@@ -70,10 +70,12 @@ std::vector<Point> CurveBrushDrawer::getGeneratedPoints() {
 
 std::unique_ptr<BaseConverter> CurveBrushDrawer::initializeConverter() {
     std::vector<Point> points;
+    auto& current = m_currentPoints;
+    
     points.insert(points.end(), m_previousPoints.begin(), m_previousPoints.end());
-    auto start = m_currentPoints.begin();
+    auto start = current.begin();
     // don't insert first point of curve if it's the same as the last point of previous points
-    if (!points.empty() && m_currentPoints[0].x == points.back().x && m_currentPoints[0].y == points.back().y) {
+    if (!points.empty() && !current.empty() && current.front().x == points.back().x && current.front().y == points.back().y) {
         ++start;
     }
     points.insert(points.end(), start, m_currentPoints.end());
