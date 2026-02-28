@@ -1,10 +1,10 @@
 {
-	"geode": "4.9.0",
+	"geode": "5.2.0",
 	"gd": {
-		"win": "2.2074",
-		"android": "2.2074",
-		"mac": "2.2074",
-		"ios": "2.2074"
+		"win": "2.2081",
+		"android": "2.2081",
+		"mac": "2.2081",
+		"ios": "2.2081"
 	},
 	"version": "1.0.10",
 	"id": "alk.allium",
@@ -13,21 +13,16 @@
 	"description": "The drawing tool for Geometry Dash",
 	"dependencies": {
 		"geode.node-ids": {
-			"importance": "required",
+			"required": true,
 			"version": ">=1.11.0"
 		},
 		"alphalaneous.editortab_api": {
-			"importance": "required",
-			"version": ">=1.0.0"
-		},
-		"geode.custom-keybinds": {
-			"version": ">=1.7.1",
-			"importance": "required",
-			"platforms": ["win"]
+			"required": true,
+			"version": ">=2.0.0"
 		},
 		"alk.ime-input": {
 			"version": ">=1.0.0",
-			"importance": "required"
+			"required": true
 		}
 	},
 	"links": {
@@ -49,6 +44,19 @@
 		]
 	},
 	"settings": {
+		"brushes-header": {
+			"type": "title",
+			"name": "Brushes"
+    },
+		"pan-editor-in-brush": {
+			"type": "keybind",
+			"name": "Pan Editor in Brush",
+			"default": ["Space"],
+			"category": "editor",
+			"description": "Allows you to pan in the editor when you have brush enabled.",
+			"priority": 1,
+			"migrate-from": "alk.allium/pan-editor-in-brush"
+		},
 		"brush-line-width": {
 			"type": "float",
 			"default": 5,
@@ -81,6 +89,10 @@
 			"description": "(Temporary) Value in game units where a point is decimated if its distance to the segment is less than this value",
 			"max": 1.5
 		},
+    "text-header": {
+			"type": "title",
+			"name": "Text"
+    },
 		"font-path": {
 			"type": "file",
 			"description": "(Temporary) The path to the font file",
@@ -109,6 +121,37 @@
 			"name": "Triangle Padding",
 			"description": "(Temporary) The percent of padding added to the triangle's size when drawing polygons and text. (Corners will be jagged, recommended if you have gaps showing up, between 1% and 2% works best)",
 			"max": 5
+		},
+		"interface-header": {
+			"type": "title",
+			"name": "Interface"
+		},
+		"overlay-scale": {
+			"type": "float",
+			"default": 1.0,
+			"min": 0.2,
+			"name": "Overlay Scale",
+			"description": "The size of the brush overlay",
+			"max": 4.0
+		},
+		"scale-overlay-with-zoom": {
+			"type": "bool",
+			"default": true,
+			"name": "Scale Overlay with Zoom",
+			"description": "Whether the brush overlay should stay the same size regardless of the editor zoom level"
+		},
+		"deadzone-radius": {
+			"type": "float",
+			"default": {
+				"win": 5.0,
+				"mac": 5.0,
+				"android": 10.0,
+				"ios": 10.0
+			},
+			"min": 0.0,
+			"name": "Deadzone Radius",
+			"description": "The radius of the deadzone for the curve and polygon brushes, e.g. how far you have to move your finger/mouse before it starts dragging.\nSet to 0 to disable",
+			"max": 25.0
 		}
 	}
 }

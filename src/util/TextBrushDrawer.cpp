@@ -26,22 +26,14 @@ bool TextBrushDrawer::init() {
 
     this->initFontData();
 
-    this->addChild(EventListenerNode<SettingChangedFilter>::create(EventListener(
-        [this](auto event) {
-            this->initFontData();
-            return ListenerResult::Propagate;
-        },
-        SettingChangedFilter(Mod::get(), "font-path")
-    )));
+    this->addEventListener(SettingChangedEvent(Mod::get(), "font-path"), [this](std::shared_ptr<SettingV3> setting) {
+        this->initFontData();
+    });
 
-    this->addChild(EventListenerNode<SettingChangedFilter>::create(EventListener(
-        [this](auto event) {
-            this->initFontData();
-            return ListenerResult::Propagate;
-        },
-        SettingChangedFilter(Mod::get(), "text-size")
-    )));
-
+    this->addEventListener(SettingChangedEvent(Mod::get(), "text-size"), [this](std::shared_ptr<SettingV3> setting) {
+        this->initFontData();
+    });
+    
     return true;
 }
 
