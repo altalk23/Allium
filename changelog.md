@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.11
+ * Fix last line segment of bezier curve not being placed (#21)
+ * Fix gaps between straight line segments not being filled in (#22)
+ * Add dynamic overlay scale & brush deadzone (#23)
+
 ## v1.0.10
  * Mod rotation values by 360 and make it positive to fix a bug where saving a negative decimal rotation offsets by 0.01 every time you close and reopen
  * Update to Geode v5

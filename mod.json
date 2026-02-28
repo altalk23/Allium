@@ -6,7 +6,7 @@
 		"mac": "2.2081",
 		"ios": "2.2081"
 	},
-	"version": "1.0.10",
+	"version": "1.0.11",
 	"id": "alk.allium",
 	"name": "Allium Drawing Tool",
 	"developer": "alk",
@@ -89,10 +89,10 @@
 			"description": "(Temporary) Value in game units where a point is decimated if its distance to the segment is less than this value",
 			"max": 1.5
 		},
-    "text-header": {
+    	"text-header": {
 			"type": "title",
 			"name": "Text"
-    },
+    	},
 		"font-path": {
 			"type": "file",
 			"description": "(Temporary) The path to the font file",
