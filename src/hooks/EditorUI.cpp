@@ -2,7 +2,7 @@
 #include <manager/BrushManager.hpp>
 #include <ui/AlliumButtonBar.hpp>
 #include <util/BrushDrawer.hpp>
-#include <alphalaneous.editortab_api/include/EditorTabAPI.hpp>
+#include <alphalaneous.editortab_api/API.hpp>
 
 using namespace geode::prelude;
 using namespace allium;
@@ -37,27 +37,16 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
             Mod::get()->setSavedValue("allium-build-tab-announcement-shown", true);
         }
 
-        alpha::editor_tabs::addTab("allium"_spr, alpha::editor_tabs::BUILD, 
-            [this] { // Create the tab
-                m_fields->m_buttonBar = AlliumButtonBar::create(this);
-                return m_fields->m_buttonBar->getButtonBar();
-            }, 
-            [] { // create the tab icon
-                auto sprite = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
-                sprite->setScale(0.2f);
-                return sprite;
-            }, 
-            [this] (bool state, auto tab) { // do something when the tab is entered and exited
-                if (!state) {
-                    if (!m_fields->m_deselected) m_fields->m_buttonBar->resetToggles(nullptr);
-                    m_fields->m_deselected = true;
-                }
-                else {
-                    m_fields->m_deselected = false;
-                }
-            }, 
-            [] (int rows, int cols, auto tab) { // do something when the tab is reloaded
-                
+        m_fields->m_buttonBar = AlliumButtonBar::create(this);
+        auto tabIcon = CCSprite::createWithSpriteFrameName("EditorIcon.png"_spr);
+        tabIcon->setScale(0.2f);
+        auto tab = alpha::editor_tabs::getMode(alpha::editor_tabs::Build)->createTab(
+            "alk.allium"_spr, m_fields->m_buttonBar->getButtonBar(), tabIcon, 0
+        );
+        m_fields->m_buttonBar->getButtonBar()->addEventListener(
+            alpha::editor_tabs::Tab::SwitchTabEvent(tab),
+            [this](bool visible) {
+                if (!visible) m_fields->m_buttonBar->resetToggles(nullptr);
             }
         );
 
@@ -111,7 +100,7 @@ struct EditorUIHook : Modify<EditorUIHook, EditorUI> {
         }
         return EditorUI::ccTouchEnded(touch, event);
     }
-  
+
   $override
     void updateZoom(float zoom) {
         EditorUI::updateZoom(zoom);

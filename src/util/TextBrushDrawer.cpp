@@ -33,12 +33,12 @@ bool TextBrushDrawer::init() {
     this->addEventListener(SettingChangedEvent(Mod::get(), "text-size"), [this](std::shared_ptr<SettingV3> setting) {
         this->initFontData();
     });
-    
+
     return true;
 }
 
 void TextBrushDrawer::initFontData() {
-    m_fontPath = Mod::get()->getSettingValue<std::filesystem::path>("font-path");
+    m_fontPath = Mod::get()->getSettingValue<asp::fs::Path>("font-path");
     if (m_fontPath.empty()) {
         m_fontPath = Mod::get()->getResourcesDir() / "Nunito-Regular.ttf";
     }
@@ -116,11 +116,11 @@ void TextBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
         m_endPos = m_origin;
         m_updatedOrigin = true;
 
-        if (m_fontPath != Mod::get()->getSettingValue<std::filesystem::path>("font-path")) {
+        if (m_fontPath != Mod::get()->getSettingValue<asp::fs::Path>("font-path")) {
             this->initFontData();
         }
     }
-    
+
     if (m_composition.empty()) {
         this->relocateCursor(point, true);
     }
@@ -145,7 +145,7 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverterFor(std::u32s
                 0.f, static_cast<float>(m_lineHeight)
             }
         );
-        
+
         auto character = static_cast<uint32_t>(character32);
         if (character == '\n') {
             globalPos.x = m_origin.x;
@@ -219,7 +219,7 @@ std::unique_ptr<BaseConverter> TextBrushDrawer::initializeConverter() {
 
 void TextBrushDrawer::updateOverlay() {
     this->clearOverlay();
-    
+
     auto text = m_text;
     text.insert(m_cursor, m_composition);
     std::u32string candidateText = U"";
@@ -272,7 +272,7 @@ void TextBrushDrawer::updateOverlay() {
 void TextBrushDrawer::updateLine() {
     if (!m_canUpdateLine) return;
     m_canUpdateLine = false;
-    
+
     BrushDrawer::updateLine();
 
     m_updatedOrigin = false;

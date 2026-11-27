@@ -61,3 +61,6 @@ build-*/
 /cmake-build-*/
 
 **/*.kra
+
+CMakeUserPresets.json
+.clangd

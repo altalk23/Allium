@@ -10,7 +10,8 @@
 #include <ui/SupportPopup.hpp>
 #include <Geode/loader/Dispatch.hpp>
 #include <Geode/loader/Event.hpp>
-#include <alphalaneous.editortab_api/include/EditorTabAPI.hpp>
+#include <alphalaneous.editortab_api/API.hpp>
+
 
 using namespace allium;
 using namespace geode::prelude;
@@ -61,9 +62,9 @@ bool AlliumButtonBar::init(EditorUI* editorUI) {
         ));
         giftButton->addChildAtPosition(giftGlow, Anchor::Center, ccp(0, 0));
     }
-    
+
     auto panToggle = this->addDefaultToggle(
-        "PanIcon.png"_spr, "pan-toggle"_spr, 
+        "PanIcon.png"_spr, "pan-toggle"_spr,
         [](auto sender) {
             BrushManager::get()->m_panEditorInBrush = !BrushManager::get()->m_panEditorInBrush;
         }
@@ -150,7 +151,7 @@ bool AlliumButtonBar::init(EditorUI* editorUI) {
         }
     );
 
-    m_buttonBar = alpha::editor_tabs::createEditButtonBar(m_buttons);
+    m_buttonBar = alpha::editor_tabs::EditorTab::create(m_buttons);
     m_buttonBar->setID("allium-tab-bar"_spr);
 
     return true;
@@ -171,7 +172,7 @@ void AlliumButtonBar::resetToggles(CCObject* sender) {
     EditorUI::get()->deselectAll();
 }
 
-EditButtonBar* AlliumButtonBar::getButtonBar() const {
+alpha::editor_tabs::EditorTab* AlliumButtonBar::getButtonBar() const {
     return m_buttonBar;
 }
 
@@ -180,14 +181,14 @@ BrushDrawer* AlliumButtonBar::getBrushDrawer() const {
 }
 
 CCMenuItemSpriteExtra* AlliumButtonBar::addDefaultButton(
-    std::string_view spriteName, std::string_view id, 
+    std::string_view spriteName, std::string_view id,
     std::function<void(CCMenuItemSpriteExtra*)> const& callback
 ) {
     return this->addButton(spriteName, "NeutralButton.png"_spr, id, callback);
 }
 
 CCMenuItemSpriteExtra* AlliumButtonBar::addButton(
-    std::string_view spriteName, std::string_view bgName, std::string_view id, 
+    std::string_view spriteName, std::string_view bgName, std::string_view id,
     std::function<void(CCMenuItemSpriteExtra*)> const& callback
 ) {
     auto sprite = CCSprite::createWithSpriteFrameName(spriteName.data());
@@ -213,7 +214,7 @@ MenuItemTogglerExtra* AlliumButtonBar::addDefaultToggle(
 }
 
 MenuItemTogglerExtra* AlliumButtonBar::addToggle(
-    std::string_view spriteName, std::string_view bgOnName, std::string_view bgOffName, std::string_view id, 
+    std::string_view spriteName, std::string_view bgOnName, std::string_view bgOffName, std::string_view id,
     std::function<void(MenuItemTogglerExtra*)> const& callback
 ) {
     auto sprite = CCSprite::createWithSpriteFrameName(spriteName.data());

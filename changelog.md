@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.12
+ * Update Editor Tab api to v3 format
+ * Update to Geode v6 - 2.2091
+
 ## v1.0.11
  * Fix last line segment of bezier curve not being placed (#21)
  * Fix gaps between straight line segments not being filled in (#22)

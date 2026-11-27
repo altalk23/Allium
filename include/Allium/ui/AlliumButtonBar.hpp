@@ -3,12 +3,13 @@
 #include <Geode/Geode.hpp>
 
 #include "MenuItemTogglerExtra.hpp"
+#include <alphalaneous.editortab_api/ui/EditorTab.hpp>
 
 namespace allium {
     class BrushDrawer;
     class AlliumButtonBar : public cocos2d::CCNode {
     protected:
-        geode::Ref<EditButtonBar> m_buttonBar;
+        geode::Ref<alpha::editor_tabs::EditorTab> m_buttonBar;
         std::vector<geode::Ref<cocos2d::CCNode>> m_buttons;
 
         MenuItemTogglerExtra* m_lineToggle = nullptr;
@@ -25,21 +26,21 @@ namespace allium {
 
         void resetToggles(cocos2d::CCObject* sender);
 
-        EditButtonBar* getButtonBar() const;
+        alpha::editor_tabs::EditorTab* getButtonBar() const;
         BrushDrawer* getBrushDrawer() const;
 
         CCMenuItemSpriteExtra* addButton(
-            std::string_view spriteName, std::string_view bgName, std::string_view id, 
+            std::string_view spriteName, std::string_view bgName, std::string_view id,
             std::function<void(CCMenuItemSpriteExtra*)> const& callback
         );
 
         CCMenuItemSpriteExtra* addDefaultButton(
-            std::string_view spriteName, std::string_view id, 
+            std::string_view spriteName, std::string_view id,
             std::function<void(CCMenuItemSpriteExtra*)> const& callback
         );
 
         MenuItemTogglerExtra* addToggle(
-            std::string_view spriteName, std::string_view bgOnName, std::string_view bgOffName, std::string_view id, 
+            std::string_view spriteName, std::string_view bgOnName, std::string_view bgOffName, std::string_view id,
             std::function<void(MenuItemTogglerExtra*)> const& callback
         );
 
