@@ -2,6 +2,7 @@
 
 #include "BrushDrawer.hpp"
 #include <alk.ime-input/include/IMEExtension.hpp>
+#include <asp/fs/Path.hpp>
 #include <cocos2d.h>
 
 namespace TTFFontParser {
@@ -28,7 +29,7 @@ namespace allium {
         bool m_updatedOrigin = false;
         Point m_origin;
 
-        std::filesystem::path m_fontPath;
+        asp::fs::Path m_fontPath;
         std::unique_ptr<TTFFontParser::FontData> m_fontData;
 
         void relocateCursor(cocos2d::CCPoint const& point, bool updateIME);

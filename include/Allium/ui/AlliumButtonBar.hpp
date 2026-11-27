@@ -1,14 +1,18 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
+#include <alphalaneous.editortab_api/ui/EditorTab.hpp>
 
 #include "MenuItemTogglerExtra.hpp"
 
 namespace allium {
     class BrushDrawer;
+}
+
+namespace allium {
     class AlliumButtonBar : public cocos2d::CCNode {
     protected:
-        geode::Ref<EditButtonBar> m_buttonBar;
+        geode::Ref<alpha::editor_tabs::EditorTab> m_editorTab;
         std::vector<geode::Ref<cocos2d::CCNode>> m_buttons;
 
         MenuItemTogglerExtra* m_lineToggle = nullptr;
@@ -26,6 +30,7 @@ namespace allium {
         void resetToggles(cocos2d::CCObject* sender);
 
         EditButtonBar* getButtonBar() const;
+        alpha::editor_tabs::EditorTab* getEditorTab() const;
         BrushDrawer* getBrushDrawer() const;
 
         CCMenuItemSpriteExtra* addButton(

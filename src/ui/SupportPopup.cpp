@@ -29,7 +29,7 @@ bool SupportPopup::init() {
 
     this->setKeypadEnabled(true);
 
-    cocos2d::CCTouchDispatcher::get()->registerForcePrio(this, 2);
+    cocos2d::CCTouchDispatcher::get()->registerForcePrio(this, 2, 0);
 
     m_mainLayer = CCLayer::create();
     this->addChildAtPosition(m_mainLayer, Anchor::Center, ccp(0, 0));

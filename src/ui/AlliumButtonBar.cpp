@@ -10,7 +10,7 @@
 #include <ui/SupportPopup.hpp>
 #include <Geode/loader/Dispatch.hpp>
 #include <Geode/loader/Event.hpp>
-#include <alphalaneous.editortab_api/include/EditorTabAPI.hpp>
+#include <alphalaneous.editortab_api/API.hpp>
 
 using namespace allium;
 using namespace geode::prelude;
@@ -150,8 +150,8 @@ bool AlliumButtonBar::init(EditorUI* editorUI) {
         }
     );
 
-    m_buttonBar = alpha::editor_tabs::createEditButtonBar(m_buttons);
-    m_buttonBar->setID("allium-tab-bar"_spr);
+    m_editorTab = alpha::editor_tabs::EditorTab::create(m_buttons);
+    m_editorTab->setID("allium-tab-bar"_spr);
 
     return true;
 }
@@ -172,7 +172,11 @@ void AlliumButtonBar::resetToggles(CCObject* sender) {
 }
 
 EditButtonBar* AlliumButtonBar::getButtonBar() const {
-    return m_buttonBar;
+    return m_editorTab;
+}
+
+alpha::editor_tabs::EditorTab* AlliumButtonBar::getEditorTab() const {
+    return m_editorTab;
 }
 
 BrushDrawer* AlliumButtonBar::getBrushDrawer() const {

@@ -38,7 +38,7 @@ bool TextBrushDrawer::init() {
 }
 
 void TextBrushDrawer::initFontData() {
-    m_fontPath = Mod::get()->getSettingValue<std::filesystem::path>("font-path");
+    m_fontPath = Mod::get()->getSettingValue<asp::fs::Path>("font-path");
     if (m_fontPath.empty()) {
         m_fontPath = Mod::get()->getResourcesDir() / "Nunito-Regular.ttf";
     }
@@ -116,7 +116,7 @@ void TextBrushDrawer::handleTouchEnd(cocos2d::CCPoint const& point) {
         m_endPos = m_origin;
         m_updatedOrigin = true;
 
-        if (m_fontPath != Mod::get()->getSettingValue<std::filesystem::path>("font-path")) {
+        if (m_fontPath != Mod::get()->getSettingValue<asp::fs::Path>("font-path")) {
             this->initFontData();
         }
     }

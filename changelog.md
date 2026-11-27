@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.0.12
+ * Update compatibility to Geode v6.0.0 and Geometry Dash 2.2091
+
 ## v1.0.11
  * Fix last line segment of bezier curve not being placed (#21)
  * Fix gaps between straight line segments not being filled in (#22)
