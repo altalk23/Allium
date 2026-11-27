@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BrushDrawer.hpp"
-#include <alk.ime-input/include/IMEExtension.hpp>
+#include <alk.ime-input/IMEExtension.hpp>
 #include <cocos2d.h>
 #include <asp/fs/Path.hpp>
 
